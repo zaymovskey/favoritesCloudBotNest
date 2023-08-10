@@ -1,24 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppUpdate } from './app.update';
-import { AppService } from './app.service';
-import { TelegrafModule } from 'nestjs-telegraf';
 import * as LocalSession from 'telegraf-session-local';
-import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from './config/config.service';
+import { StartCommand } from './commands/start.command';
+import { HearCommand } from './commands/hear.command';
+import { TelegrafModule } from 'nestjs-telegraf';
+import { databaseProvider } from './database.provider';
+import { UsersModule } from './users/users.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 const configService = new ConfigService();
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-    }),
     TelegrafModule.forRoot({
       middlewares: [sessions.middleware()],
       token: configService.get('TG_TOKEN'),
     }),
+    UsersModule,
   ],
-  providers: [AppService, AppUpdate],
+  providers: [StartCommand, HearCommand, databaseProvider],
 })
 export class AppModule {}
