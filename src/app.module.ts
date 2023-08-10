@@ -6,6 +6,7 @@ import { HearCommand } from './commands/hear.command';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { databaseProvider } from './database.provider';
 import { UsersModule } from './users/users.module';
+import { FoldersModule } from './folders/folders.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 const configService = new ConfigService();
@@ -17,6 +18,7 @@ const configService = new ConfigService();
       token: configService.get('TG_TOKEN'),
     }),
     UsersModule,
+    FoldersModule,
   ],
   providers: [StartCommand, HearCommand, databaseProvider],
 })
