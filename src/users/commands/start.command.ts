@@ -3,9 +3,13 @@ import { Start } from 'nestjs-telegraf';
 import { Command } from '../../command.class';
 import { UsersService } from '../users.service';
 import { Inject } from '@nestjs/common';
+import { FoldersService } from '../../folders/folders.service';
 
 export class StartCommand extends Command {
-  constructor(@Inject(UsersService) private userService: UsersService) {
+  constructor(
+    @Inject(FoldersService) private folderService: FoldersService,
+    @Inject(UsersService) private userService: UsersService,
+  ) {
     super();
   }
 

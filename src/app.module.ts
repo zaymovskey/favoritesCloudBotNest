@@ -26,6 +26,7 @@ const configService = new ConfigService();
       password: configService.get('PG_PASSWORD'),
       database: configService.get('PG_DATABASE_NAME'),
       models: [User, File, Folder],
+      autoLoadModels: true,
     }),
     UsersModule,
     FoldersModule,

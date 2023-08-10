@@ -22,9 +22,17 @@ export class User extends Model<User, IUserCreationAttrs> {
   @Column({ type: DataTypes.STRING, allowNull: true })
   banReason: string;
 
-  @HasMany(() => Folder, 'userId')
+  @HasMany(() => Folder, {
+    foreignKey: 'userId',
+    sourceKey: 'userId',
+    keyType: DataTypes.BIGINT,
+  })
   folders: Folder[];
 
-  @HasMany(() => File, 'userId')
+  @HasMany(() => File, {
+    foreignKey: 'userId',
+    sourceKey: 'userId',
+    keyType: DataTypes.BIGINT,
+  })
   files: File[];
 }
