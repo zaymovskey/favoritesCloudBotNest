@@ -3,7 +3,7 @@ import { Column, HasMany, Model, Table } from 'sequelize-typescript';
 import { Folder } from '../folders/folders.model';
 import { File } from '../files/files.model';
 
-interface IUserCreationAttrs {
+export interface IUserCreationAttrs {
   userId: number;
 }
 
