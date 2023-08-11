@@ -1,4 +1,4 @@
-import { Context } from 'telegraf';
+import { Context, Markup } from 'telegraf';
 import { Start } from 'nestjs-telegraf';
 import { Command } from '../../command.class';
 import { UsersService } from '../users.service';
@@ -14,9 +14,13 @@ export class StartCommand extends Command {
   }
 
   @Start()
-  handle(ctx: Context): void {
-    this.folderService.getUserFolderKB(ctx.message!.from.id);
+  async handle(ctx: Context): Promise<void> {
+    const userFolders = await this.folderService.getUserFoldersKB(
+      ctx.message!.from.id,
+    );
+    const userFoldersKB = this.folderService.createUserFoldersKB(userFolders);
+
     this.userService.createUser({ userId: ctx.message!.from.id });
-    void ctx.reply('Тест1');
+    void ctx.reply('Тест1', userFoldersKB);
   }
 }
