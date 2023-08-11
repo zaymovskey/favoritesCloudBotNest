@@ -1,5 +1,11 @@
-import { DataTypes } from 'sequelize';
-import { BelongsTo, Column, Model, Table } from 'sequelize-typescript';
+import { DataTypes, literal } from 'sequelize';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { User } from '../users/users.model';
 import { Folder } from '../folders/folders.model';
 
@@ -31,9 +37,29 @@ export class File extends Model<File, IFileCreationAttrs> {
   @Column({ type: DataTypes.ENUM(...Object.values(EnumFileTypes)) })
   type: string;
 
-  @BelongsTo(() => User, 'userId')
+  @ForeignKey(() => User)
+  @Column({ type: DataTypes.BIGINT })
+  userId: number;
+
+  @BelongsTo(() => User)
   user: User;
 
-  @BelongsTo(() => Folder, 'folderId')
+  @ForeignKey(() => Folder)
+  @Column
+  folderId: number;
+
+  @BelongsTo(() => Folder)
   folder: Folder;
+
+  @Column({
+    type: DataTypes.DATE,
+    defaultValue: literal('NOW()'),
+  })
+  createdAt: DataTypes.DateDataType;
+
+  @Column({
+    type: DataTypes.DATE,
+    defaultValue: literal('NOW()'),
+  })
+  updatedAt: DataTypes.DateDataType;
 }

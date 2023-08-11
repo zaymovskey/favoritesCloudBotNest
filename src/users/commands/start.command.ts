@@ -15,6 +15,7 @@ export class StartCommand extends Command {
 
   @Start()
   handle(ctx: Context): void {
+    this.folderService.getUserFolderKB(ctx.message!.from.id);
     this.userService.createUser({ userId: ctx.message!.from.id });
     void ctx.reply('Тест1');
   }

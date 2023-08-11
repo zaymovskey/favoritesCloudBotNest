@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, literal } from 'sequelize';
 import { Column, HasMany, Model, Table } from 'sequelize-typescript';
 import { Folder } from '../folders/folders.model';
 import { File } from '../files/files.model';
@@ -22,17 +22,21 @@ export class User extends Model<User, IUserCreationAttrs> {
   @Column({ type: DataTypes.STRING, allowNull: true })
   banReason: string;
 
-  @HasMany(() => Folder, {
-    foreignKey: 'userId',
-    sourceKey: 'userId',
-    keyType: DataTypes.BIGINT,
-  })
+  @HasMany(() => Folder, { sourceKey: 'userId' })
   folders: Folder[];
 
-  @HasMany(() => File, {
-    foreignKey: 'userId',
-    sourceKey: 'userId',
-    keyType: DataTypes.BIGINT,
-  })
+  @HasMany(() => File, { sourceKey: 'userId' })
   files: File[];
+
+  @Column({
+    type: DataTypes.DATE,
+    defaultValue: literal('NOW()'),
+  })
+  createdAt: DataTypes.DateDataType;
+
+  @Column({
+    type: DataTypes.DATE,
+    defaultValue: literal('NOW()'),
+  })
+  updatedAt: DataTypes.DateDataType;
 }
