@@ -3,7 +3,8 @@
     {
       "id": "5744176782:5744176782",
       "data": {
-        "__scenes": {}
+        "__scenes": {},
+        "type": "folderNavigating"
       }
     }
   ]
