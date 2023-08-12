@@ -27,6 +27,25 @@ export class FoldersService {
     });
   }
 
+  async getDirectoryFoldersAndPath(
+    userId: number,
+    parentId: number | null = null,
+  ) {
+    const allUserFolders = await this.folderRepo.findAll({
+      where: {
+        userId: userId,
+      },
+    });
+
+    const foldersKB = this.createFoldersKB(
+      allUserFolders.filter((folder) => folder.parentId === parentId),
+    );
+
+    console.log(this.createFolderPath(allUserFolders, parentId));
+
+    return foldersKB;
+  }
+
   createFoldersKB(folders: Folder[]) {
     const markupButtons = folders.map((folder) =>
       Markup.button.callback(
@@ -38,5 +57,16 @@ export class FoldersService {
     return Markup.inlineKeyboard(markupButtons, {
       columns: this.foldersKBColumns,
     });
+  }
+
+  createFolderPath(userFolders: Folder[], folderId: number | null): string {
+    let path = '/';
+    userFolders.forEach((folder) => {
+      if (folder.id === folderId) {
+        path = path + folder.name;
+        path = path + this.createFolderPath(userFolders, folder.parentId);
+      }
+    });
+    return path;
   }
 }
