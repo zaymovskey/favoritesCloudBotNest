@@ -15,8 +15,8 @@ export class FoldersService {
     userId: number,
     parentId: number | null = null,
     name: string,
-  ) {
-    await this.folderRepo.create({
+  ): Promise<Folder> {
+    return await this.folderRepo.create({
       userId: userId,
       parentId: parentId,
       name: name,
@@ -26,13 +26,15 @@ export class FoldersService {
   async getDirectoryFoldersAndPath(
     userId: number,
     folderId: number | null = null,
-    parentId: number | null = null,
   ) {
     const allUserFolders = await this.folderRepo.findAll({
       where: {
         userId: userId,
       },
     });
+
+    const parentId =
+      allUserFolders.find((folder) => folder.id === folderId)?.parentId ?? null;
 
     const foldersKB = this.createFoldersKB(
       allUserFolders.filter((folder) => folder.parentId === folderId),

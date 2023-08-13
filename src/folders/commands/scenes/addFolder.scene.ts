@@ -30,8 +30,19 @@ export class AddFolderScene {
     const parentId = ctx.session.folderId ?? null;
     const userId = ctx.message.from.id;
 
-    await this.folderService.addFolder(userId, parentId, folderName);
+    const newFolder = await this.folderService.addFolder(
+      userId,
+      parentId,
+      folderName,
+    );
+    const [folderKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(
+        userId,
+        newFolder.parentId,
+      );
 
     await ctx.scene.leave();
+
+    void ctx.reply(path, folderKB);
   }
 }

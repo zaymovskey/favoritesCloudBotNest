@@ -13,7 +13,7 @@ export function footerKeyboardKeyboard(
     ),
     Markup.button.callback(
       'Назад ⬅️',
-      createFolderCallbackData(EnumFolderActions.NAV, parentId),
+      createFolderCallbackData(EnumFolderActions.NAV, parentId, folderId),
     ),
   ];
 }

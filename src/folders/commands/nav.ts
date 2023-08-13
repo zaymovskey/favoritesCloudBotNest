@@ -26,7 +26,6 @@ export class Nav extends Command {
       await this.folderService.getDirectoryFoldersAndPath(
         callbackQueryData!.from.id,
         data.subjectId,
-        data.parentId,
       );
 
     void ctx.reply(path, folderKB);
