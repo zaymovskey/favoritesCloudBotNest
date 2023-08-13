@@ -22,6 +22,8 @@ export class Nav extends Command {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);
 
+    console.log(data.subjectId);
+
     const [folderKB, path] =
       await this.folderService.getDirectoryFoldersAndPath(
         callbackQueryData!.from.id,

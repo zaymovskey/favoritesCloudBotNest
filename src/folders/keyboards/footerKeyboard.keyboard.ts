@@ -12,6 +12,10 @@ export function footerKeyboardKeyboard(
       createFolderCallbackData(EnumFolderActions.ADD, folderId),
     ),
     Markup.button.callback(
+      'Удалить папку ❌',
+      createFolderCallbackData(EnumFolderActions.REMOVE, folderId),
+    ),
+    Markup.button.callback(
       'Назад ⬅️',
       createFolderCallbackData(EnumFolderActions.NAV, parentId, folderId),
     ),

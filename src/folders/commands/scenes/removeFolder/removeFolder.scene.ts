@@ -1,48 +1,56 @@
-// import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
-// import { SceneContext } from 'telegraf/typings/scenes';
-// import { Telegraf } from 'telegraf';
-// import { Context } from '../../../../context.interface';
-// import { Inject } from '@nestjs/common';
-// import { FoldersService } from '../../../folders.service';
-//
-// @Scene('removeFolderScene')
-// export class RemoveFolderScene {
-//   constructor(
-//     @InjectBot() private readonly bot: Telegraf<Context>,
-//     @Inject(FoldersService)
-//     private folderService: FoldersService,
-//   ) {}
-//
-//   @SceneEnter()
-//   async enter(@Ctx() ctx: Context) {
-//     await ctx.reply('Введите название папки', {
-//       reply_markup: {
-//         inline_keyboard: [[{ text: 'Отмена', callback_data: '4' }]],
-//       },
-//     });
-//   }
-//
-//   @On('text')
-//   async onAnswer(
-//     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
-//   ) {
-//     const folderName = ctx.message.text;
-//     const parentId = ctx.session.folderId ?? null;
-//     const userId = ctx.message.from.id;
-//
-//     const newFolder = await this.folderService.addFolder(
-//       userId,
-//       parentId,
-//       folderName,
-//     );
-//     const [folderKB, path] =
-//       await this.folderService.getDirectoryFoldersAndPath(
-//         userId,
-//         newFolder.parentId,
-//       );
-//
-//     await ctx.scene.leave();
-//
-//     void ctx.reply(path, folderKB);
-//   }
-// }
+import { Action, Ctx, InjectBot, Scene, SceneEnter } from 'nestjs-telegraf';
+import { SceneContext } from 'telegraf/typings/scenes';
+import { Telegraf } from 'telegraf';
+import { Context } from '../../../../context.interface';
+import { Inject } from '@nestjs/common';
+import { FoldersService } from '../../../folders.service';
+import { Update } from 'telegraf/typings/core/types/typegram';
+import {
+  EnumFolderActions,
+  folderActionRegexps,
+} from '../../../folders.interfaces';
+import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
+import { createCallbackData } from '../../../../utils/createCallbackData.util';
+
+@Scene('removeFolderScene')
+export class RemoveFolderScene {
+  constructor(
+    @InjectBot() private readonly bot: Telegraf<Context>,
+    @Inject(FoldersService)
+    private folderService: FoldersService,
+  ) {}
+
+  @SceneEnter()
+  async enter(
+    @Ctx() ctx: Context & SceneContext & { update: Update.CallbackQueryUpdate },
+  ) {
+    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath(
+      ctx.update.callback_query.from.id,
+      ctx.session.folderId,
+      false,
+      EnumFolderActions.REMOVE,
+    );
+
+    void ctx.reply('Выберите папку, которую хотите удалить', folderKB);
+  }
+
+  @Action(folderActionRegexps.remove)
+  async onAnswer(
+    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
+  ) {
+    const callbackQueryData = getCallbackQueryData(ctx);
+    const data = createCallbackData(callbackQueryData!.data);
+
+    await this.folderService.removeFolder(data.subjectId!);
+
+    const [folderKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(
+        callbackQueryData!.from.id,
+        ctx.session.folderId,
+      );
+
+    void ctx.reply(path, folderKB);
+
+    await ctx.scene.leave();
+  }
+}

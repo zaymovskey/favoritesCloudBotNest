@@ -11,6 +11,14 @@ export class FoldersService {
   readonly foldersKBColumns = 3;
   constructor(@InjectModel(Folder) private folderRepo: typeof Folder) {}
 
+  async removeFolder(folderId: number) {
+    await this.folderRepo.destroy({
+      where: {
+        id: folderId,
+      },
+    });
+  }
+
   async addFolder(
     userId: number,
     parentId: number | null = null,
@@ -26,6 +34,8 @@ export class FoldersService {
   async getDirectoryFoldersAndPath(
     userId: number,
     folderId: number | null = null,
+    footer: boolean = true,
+    folderAction: EnumFolderActions = EnumFolderActions.NAV,
   ) {
     const allUserFolders = await this.folderRepo.findAll({
       where: {
@@ -40,6 +50,8 @@ export class FoldersService {
       allUserFolders.filter((folder) => folder.parentId === folderId),
       parentId,
       folderId,
+      footer,
+      folderAction,
     );
     const path = this.createFolderPath(allUserFolders, folderId, folderId);
 
@@ -50,7 +62,8 @@ export class FoldersService {
     folders: Folder[],
     parentId: number | null,
     folderId: number | null,
-    footer: boolean = true,
+    footer: boolean,
+    folderAction: EnumFolderActions,
   ) {
     const markupButtons = [];
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
@@ -58,11 +71,7 @@ export class FoldersService {
         .map((folder) =>
           Markup.button.callback(
             folder.name + ' 📁',
-            createFolderCallbackData(
-              EnumFolderActions.NAV,
-              folder.id,
-              folder.parentId,
-            ),
+            createFolderCallbackData(folderAction, folder.id, folder.parentId),
           ),
         )
         .slice(i, i + 3);
