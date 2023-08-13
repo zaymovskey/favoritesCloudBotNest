@@ -40,10 +40,9 @@ export class FoldersService {
     const foldersKB = this.createFoldersKB(
       allUserFolders.filter((folder) => folder.parentId === parentId),
     );
+    const path = this.createFolderPath(allUserFolders, parentId, parentId);
 
-    console.log(this.createFolderPath(allUserFolders, parentId));
-
-    return foldersKB;
+    return [foldersKB, path] as const;
   }
 
   createFoldersKB(folders: Folder[]) {
@@ -59,14 +58,25 @@ export class FoldersService {
     });
   }
 
-  createFolderPath(userFolders: Folder[], folderId: number | null): string {
+  createFolderPath(
+    userFolders: Folder[],
+    folderId: number | null,
+    targetFolderId: number | null,
+  ): string {
     let path = '/';
     userFolders.forEach((folder) => {
       if (folder.id === folderId) {
         path = path + folder.name;
-        path = path + this.createFolderPath(userFolders, folder.parentId);
+        path =
+          path +
+          this.createFolderPath(userFolders, folder.parentId, targetFolderId);
       }
     });
+
+    if (folderId === targetFolderId) {
+      path = path.split('/').reverse().join('/');
+      if (path !== '/') path = path.slice(0, -1);
+    }
     return path;
   }
 }

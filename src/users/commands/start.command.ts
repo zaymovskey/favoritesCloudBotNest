@@ -20,10 +20,9 @@ export class StartCommand extends Command {
   async handle(ctx: Context): Promise<void> {
     await this.userService.createUser({ userId: ctx.message!.from.id });
 
-    const rootFoldersKB = await this.folderService.getDirectoryFoldersAndPath(
-      ctx.message!.from.id,
-    );
+    const [rootFoldersKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(ctx.message!.from.id);
 
-    void ctx.reply('/', rootFoldersKB);
+    void ctx.reply(path, rootFoldersKB);
   }
 }

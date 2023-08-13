@@ -21,11 +21,12 @@ export class NavCommand extends Command {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);
 
-    const folderKB = await this.folderService.getDirectoryFoldersAndPath(
-      callbackQueryData!.from.id,
-      data.subjectId,
-    );
+    const [folderKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(
+        callbackQueryData!.from.id,
+        data.subjectId,
+      );
 
-    void ctx.reply('/', folderKB);
+    void ctx.reply(path, folderKB);
   }
 }
