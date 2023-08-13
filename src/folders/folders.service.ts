@@ -4,6 +4,7 @@ import { Folder } from './folders.model';
 import { Markup } from 'telegraf';
 import { createFolderCallbackData } from './utils/createFolderCallbackData.util';
 import { EnumFolderActions } from './folders.interfaces';
+import { footerKeyboard } from './keyboards/footer.keyboard';
 
 @Injectable()
 export class FoldersService {
@@ -30,33 +31,30 @@ export class FoldersService {
     return [foldersKB, path] as const;
   }
 
-  createFoldersKB(folders: Folder[], parentId: number | null) {
+  createFoldersKB(
+    folders: Folder[],
+    parentId: number | null,
+    footer: boolean = true,
+  ) {
     const markupButtons = [];
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
-      markupButtons.push(
-        folders
-          .map((folder) =>
-            Markup.button.callback(
-              folder.name + ' 📁',
-              createFolderCallbackData(
-                EnumFolderActions.NAV,
-                folder.id,
-                folder.parentId,
-              ),
+      const markupFolderButtonRows = folders
+        .map((folder) =>
+          Markup.button.callback(
+            folder.name + ' 📁',
+            createFolderCallbackData(
+              EnumFolderActions.NAV,
+              folder.id,
+              folder.parentId,
             ),
-          )
-          .slice(i, i + 3),
-      );
+          ),
+        )
+        .slice(i, i + 3);
+
+      markupButtons.push(markupFolderButtonRows);
     }
 
-    const footer = [
-      Markup.button.callback(
-        'Назад ⬅️',
-        createFolderCallbackData(EnumFolderActions.NAV, parentId),
-      ),
-    ];
-
-    markupButtons.push(footer);
+    if (footer) markupButtons.push(footerKeyboard(parentId));
 
     return Markup.inlineKeyboard(markupButtons);
   }
