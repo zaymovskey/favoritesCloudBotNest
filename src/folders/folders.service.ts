@@ -3,11 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Folder } from './folders.model';
 import { Markup } from 'telegraf';
 import { createFolderCallbackData } from './utils/createFolderCallbackData.util';
-
-export enum EnumFolderActions {
-  NAVAHEAD = 'navAhead',
-  NAVBACK = 'navBack',
-}
+import { EnumFolderActions } from './folders.interfaces';
 
 @Injectable()
 export class FoldersService {

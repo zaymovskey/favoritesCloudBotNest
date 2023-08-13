@@ -1,4 +1,4 @@
-import { EnumFolderActions } from '../folders.service';
+import { EnumFolderActions } from '../folders.interfaces';
 
 export function createFolderCallbackData(
   action: EnumFolderActions,

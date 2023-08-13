@@ -6,6 +6,7 @@ import { Inject } from '@nestjs/common';
 import { FoldersService } from '../folders.service';
 import { getCallbackQueryData } from '../../utils/getCallbackQueryData.util';
 import { createCallbackData } from '../../utils/createCallbackData.util';
+import { actionRegexps } from '../folders.interfaces';
 
 export class NavCommand extends Command {
   constructor(
@@ -16,7 +17,7 @@ export class NavCommand extends Command {
     super();
   }
 
-  @Action(/navAhead(.+)/)
+  @Action(actionRegexps.nav)
   async handle(ctx: Context) {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);
