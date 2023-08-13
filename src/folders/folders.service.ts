@@ -10,21 +10,9 @@ export class FoldersService {
   readonly foldersKBColumns = 3;
   constructor(@InjectModel(Folder) private folderRepo: typeof Folder) {}
 
-  public async getFolders(
-    userId: number,
-    parentId: number | null = null,
-  ): Promise<Folder[]> {
-    return await this.folderRepo.findAll({
-      where: {
-        userId: userId,
-        parentId: parentId,
-      },
-      order: ['name'],
-    });
-  }
-
   async getDirectoryFoldersAndPath(
     userId: number,
+    folderId: number | null = null,
     parentId: number | null = null,
   ) {
     const allUserFolders = await this.folderRepo.findAll({
@@ -34,24 +22,43 @@ export class FoldersService {
     });
 
     const foldersKB = this.createFoldersKB(
-      allUserFolders.filter((folder) => folder.parentId === parentId),
+      allUserFolders.filter((folder) => folder.parentId === folderId),
+      parentId,
     );
-    const path = this.createFolderPath(allUserFolders, parentId, parentId);
+    const path = this.createFolderPath(allUserFolders, folderId, folderId);
 
     return [foldersKB, path] as const;
   }
 
-  createFoldersKB(folders: Folder[]) {
-    const markupButtons = folders.map((folder) =>
-      Markup.button.callback(
-        folder.name,
-        createFolderCallbackData(EnumFolderActions.NAVAHEAD, folder.id),
-      ),
-    );
+  createFoldersKB(folders: Folder[], parentId: number | null) {
+    const markupButtons = [];
+    for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
+      markupButtons.push(
+        folders
+          .map((folder) =>
+            Markup.button.callback(
+              folder.name + ' 📁',
+              createFolderCallbackData(
+                EnumFolderActions.NAVAHEAD,
+                folder.id,
+                folder.parentId,
+              ),
+            ),
+          )
+          .slice(i, i + 3),
+      );
+    }
 
-    return Markup.inlineKeyboard(markupButtons, {
-      columns: this.foldersKBColumns,
-    });
+    const footer = [
+      Markup.button.callback(
+        'Назад ⬅️',
+        createFolderCallbackData(EnumFolderActions.NAVAHEAD, parentId),
+      ),
+    ];
+
+    markupButtons.push(footer);
+
+    return Markup.inlineKeyboard(markupButtons);
   }
 
   createFolderPath(

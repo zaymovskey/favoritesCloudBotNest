@@ -1,13 +1,17 @@
 export interface ICallbackData {
   action: string;
-  subjectId: number;
+  subjectId: number | null;
+  parentId: number | null;
 }
-export function createCallbackData(callbackDataString: string) {
+export function createCallbackData(callbackDataString: string): ICallbackData {
   const callbackDataArray = callbackDataString.split(';');
-  const callbackData: ICallbackData = {
+  return {
     action: callbackDataArray[0],
-    subjectId: Number(callbackDataArray[1]),
+    subjectId: toNumberOrNull(callbackDataArray[1]),
+    parentId: toNumberOrNull(callbackDataArray[2]),
   };
+}
 
-  return callbackData;
+function toNumberOrNull(callbackDataItem: string | 'null'): number | null {
+  return Number(callbackDataItem) || null;
 }
