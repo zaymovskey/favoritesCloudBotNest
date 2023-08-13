@@ -39,7 +39,7 @@ export class FoldersService {
             Markup.button.callback(
               folder.name + ' 📁',
               createFolderCallbackData(
-                EnumFolderActions.NAVAHEAD,
+                EnumFolderActions.NAV,
                 folder.id,
                 folder.parentId,
               ),
@@ -52,7 +52,7 @@ export class FoldersService {
     const footer = [
       Markup.button.callback(
         'Назад ⬅️',
-        createFolderCallbackData(EnumFolderActions.NAVAHEAD, parentId),
+        createFolderCallbackData(EnumFolderActions.NAV, parentId),
       ),
     ];
 

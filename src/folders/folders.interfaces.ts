@@ -1,9 +1,7 @@
 export enum EnumFolderActions {
-  NAVAHEAD = 'nav',
-  NAVBACK = 'navBack',
+  NAV = 'nav',
 }
 
 export const actionRegexps: Record<EnumFolderActions, RegExp> = {
-  [EnumFolderActions.NAVAHEAD]: new RegExp(`${EnumFolderActions.NAVAHEAD}(.+)`),
-  [EnumFolderActions.NAVBACK]: new RegExp(`${EnumFolderActions.NAVBACK}(.+)`),
+  [EnumFolderActions.NAV]: new RegExp(`${EnumFolderActions.NAV}(.+)`),
 };
