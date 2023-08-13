@@ -6,9 +6,9 @@ import { Inject } from '@nestjs/common';
 import { FoldersService } from '../folders.service';
 import { getCallbackQueryData } from '../../utils/getCallbackQueryData.util';
 import { createCallbackData } from '../../utils/createCallbackData.util';
-import { actionRegexps } from '../folders.interfaces';
+import { folderActionRegexps } from '../folders.interfaces';
 
-export class NavCommand extends Command {
+export class Nav extends Command {
   constructor(
     @InjectBot() private readonly bot: Telegraf,
     @Inject(FoldersService)
@@ -17,7 +17,7 @@ export class NavCommand extends Command {
     super();
   }
 
-  @Action(actionRegexps.nav)
+  @Action(folderActionRegexps.nav)
   async handle(ctx: Context) {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);

@@ -1,7 +1,9 @@
 export enum EnumFolderActions {
   NAV = 'nav',
+  ADD = 'add',
 }
 
-export const actionRegexps: Record<EnumFolderActions, RegExp> = {
+export const folderActionRegexps: Record<EnumFolderActions, RegExp> = {
   [EnumFolderActions.NAV]: new RegExp(`${EnumFolderActions.NAV}(.+)`),
+  [EnumFolderActions.ADD]: new RegExp(`${EnumFolderActions.ADD}(.+)`),
 };

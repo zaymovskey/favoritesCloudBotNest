@@ -2,14 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Folder } from './folders.model';
 import { Markup } from 'telegraf';
-import { createFolderCallbackData } from './utils/createFolderCallbackData.util';
+import { createFolderCallbackData } from './utils/createFolderCallbackData';
 import { EnumFolderActions } from './folders.interfaces';
-import { footerKeyboard } from './keyboards/footer.keyboard';
+import { footerKeyboardKeyboard } from './keyboards/footerKeyboard.keyboard';
 
 @Injectable()
 export class FoldersService {
   readonly foldersKBColumns = 3;
   constructor(@InjectModel(Folder) private folderRepo: typeof Folder) {}
+
+  async addFolder(
+    userId: number,
+    parentId: number | null = null,
+    name: string,
+  ) {
+    await this.folderRepo.create({
+      userId: userId,
+      parentId: parentId,
+      name: name,
+    });
+  }
 
   async getDirectoryFoldersAndPath(
     userId: number,
@@ -25,6 +37,7 @@ export class FoldersService {
     const foldersKB = this.createFoldersKB(
       allUserFolders.filter((folder) => folder.parentId === folderId),
       parentId,
+      folderId,
     );
     const path = this.createFolderPath(allUserFolders, folderId, folderId);
 
@@ -34,6 +47,7 @@ export class FoldersService {
   createFoldersKB(
     folders: Folder[],
     parentId: number | null,
+    folderId: number | null,
     footer: boolean = true,
   ) {
     const markupButtons = [];
@@ -54,7 +68,7 @@ export class FoldersService {
       markupButtons.push(markupFolderButtonRows);
     }
 
-    if (footer) markupButtons.push(footerKeyboard(parentId));
+    if (footer) markupButtons.push(footerKeyboardKeyboard(parentId, folderId));
 
     return Markup.inlineKeyboard(markupButtons);
   }

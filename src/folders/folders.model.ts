@@ -13,11 +13,12 @@ import { File } from '../files/files.model';
 interface IFolderCreationAttrs {
   userId: number;
   name: string;
+  parentId: number | null;
 }
 
 @Table({
   tableName: 'folder',
-  // indexes: [{ fields: ['userId', 'parentId', 'name'], unique: true }],
+  indexes: [{ fields: ['userId', 'parentId', 'name'], unique: true }],
 })
 export class Folder extends Model<Folder, IFolderCreationAttrs> {
   @Column({ type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true })
