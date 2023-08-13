@@ -2,7 +2,7 @@ import { Markup } from 'telegraf';
 import { createFolderCallbackData } from '../utils/createFolderCallbackData';
 import { EnumFolderActions } from '../folders.interfaces';
 
-export function footerKeyboardKeyboard(
+export function folderFooterKeyboard(
   parentId: number | null,
   folderId: number | null,
 ) {

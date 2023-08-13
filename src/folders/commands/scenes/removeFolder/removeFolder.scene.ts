@@ -29,6 +29,7 @@ export class RemoveFolderScene {
       ctx.session.folderId,
       false,
       EnumFolderActions.REMOVE,
+      'cancel_footer',
     );
 
     void ctx.reply('Выберите папку, которую хотите удалить', folderKB);
@@ -52,5 +53,21 @@ export class RemoveFolderScene {
     void ctx.reply(path, folderKB);
 
     await ctx.scene.leave();
+  }
+
+  @Action('cancel')
+  async cancel(
+    @Ctx()
+    ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
+  ) {
+    const [folderKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(
+        ctx.update.callback_query.from.id,
+        ctx.session.folderId,
+      );
+
+    await ctx.scene.leave();
+
+    void ctx.reply(path, folderKB);
   }
 }

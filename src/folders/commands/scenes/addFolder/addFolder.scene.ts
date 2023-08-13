@@ -1,10 +1,11 @@
 import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
-import { Telegraf } from 'telegraf';
+import { Markup, Telegraf } from 'telegraf';
 import { Context } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
 import { Update } from 'telegraf/typings/core/types/typegram';
+import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
 
 @Scene('addFolderScene')
 export class AddFolderScene {
@@ -16,11 +17,10 @@ export class AddFolderScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: Context) {
-    await ctx.reply('Введите название папки', {
-      reply_markup: {
-        inline_keyboard: [[{ text: 'Отмена', callback_data: 'cancel' }]],
-      },
-    });
+    await ctx.reply(
+      'Введите название папки',
+      Markup.inlineKeyboard(cancelFooterKeyboard()),
+    );
   }
 
   @On('text')

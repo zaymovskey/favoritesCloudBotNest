@@ -4,7 +4,8 @@ import { Folder } from './folders.model';
 import { Markup } from 'telegraf';
 import { createFolderCallbackData } from './utils/createFolderCallbackData';
 import { EnumFolderActions } from './folders.interfaces';
-import { footerKeyboardKeyboard } from './keyboards/footerKeyboard.keyboard';
+import { folderFooterKeyboard } from './keyboards/folderFooterKeyboard';
+import { cancelFooterKeyboard } from '../keyboards/cancelFooter.keyboard';
 
 @Injectable()
 export class FoldersService {
@@ -36,6 +37,7 @@ export class FoldersService {
     folderId: number | null = null,
     footer: boolean = true,
     folderAction: EnumFolderActions = EnumFolderActions.NAV,
+    footerType: string = 'folders_footer',
   ) {
     const allUserFolders = await this.folderRepo.findAll({
       where: {
@@ -52,6 +54,7 @@ export class FoldersService {
       folderId,
       footer,
       folderAction,
+      footerType,
     );
     const path = this.createFolderPath(allUserFolders, folderId, folderId);
 
@@ -64,6 +67,7 @@ export class FoldersService {
     folderId: number | null,
     footer: boolean,
     folderAction: EnumFolderActions,
+    footerType: string,
   ) {
     const markupButtons = [];
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
@@ -79,7 +83,11 @@ export class FoldersService {
       markupButtons.push(markupFolderButtonRows);
     }
 
-    if (footer) markupButtons.push(footerKeyboardKeyboard(parentId, folderId));
+    if (footerType === 'folders_footer') {
+      markupButtons.push(folderFooterKeyboard(parentId, folderId));
+    } else if (footerType === 'cancel_footer') {
+      markupButtons.push(cancelFooterKeyboard());
+    }
 
     return Markup.inlineKeyboard(markupButtons);
   }
