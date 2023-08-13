@@ -3,11 +3,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Folder } from './folders.model';
 import { FoldersService } from './folders.service';
 import { Nav } from './commands/nav';
-import { AddFolderEnter } from './commands/scenes/addFolderEnter.command';
-import { AddFolderScene } from './commands/scenes/addFolder.scene';
+import { AddFolderEnterCommand } from './commands/scenes/addFolder/addFolderEnter.command';
+import { AddFolderScene } from './commands/scenes/addFolder/addFolder.scene';
 
 @Module({
-  providers: [FoldersService, Nav, AddFolderScene, AddFolderEnter],
+  providers: [FoldersService, Nav, AddFolderScene, AddFolderEnterCommand],
   imports: [SequelizeModule.forFeature([Folder])],
 })
 export class FoldersModule {}

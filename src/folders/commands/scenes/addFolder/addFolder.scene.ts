@@ -1,9 +1,10 @@
-import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Telegraf } from 'telegraf';
-import { Context } from '../../../context.interface';
+import { Context } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
-import { FoldersService } from '../../folders.service';
+import { FoldersService } from '../../../folders.service';
+import { Update } from 'telegraf/typings/core/types/typegram';
 
 @Scene('addFolderScene')
 export class AddFolderScene {
@@ -17,7 +18,7 @@ export class AddFolderScene {
   async enter(@Ctx() ctx: Context) {
     await ctx.reply('Введите название папки', {
       reply_markup: {
-        inline_keyboard: [[{ text: 'Отмена', callback_data: '4' }]],
+        inline_keyboard: [[{ text: 'Отмена', callback_data: 'cancel' }]],
       },
     });
   }
@@ -39,6 +40,22 @@ export class AddFolderScene {
       await this.folderService.getDirectoryFoldersAndPath(
         userId,
         newFolder.parentId,
+      );
+
+    await ctx.scene.leave();
+
+    void ctx.reply(path, folderKB);
+  }
+
+  @Action('cancel')
+  async cancel(
+    @Ctx()
+    ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
+  ) {
+    const [folderKB, path] =
+      await this.folderService.getDirectoryFoldersAndPath(
+        ctx.update.callback_query.from.id,
+        ctx.session.folderId,
       );
 
     await ctx.scene.leave();

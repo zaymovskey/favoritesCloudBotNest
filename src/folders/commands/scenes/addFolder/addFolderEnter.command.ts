@@ -1,14 +1,14 @@
-import { Command } from '../../../command.class';
+import { Command } from '../../../../command.class';
 import { Action, Ctx, InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
-import { Context } from '../../../context.interface';
-import { folderActionRegexps } from '../../folders.interfaces';
+import { Context } from '../../../../context.interface';
+import { folderActionRegexps } from '../../../folders.interfaces';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Update } from 'telegraf/typings/core/types/typegram';
-import { getCallbackQueryData } from '../../../utils/getCallbackQueryData.util';
-import { createCallbackData } from '../../../utils/createCallbackData.util';
+import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
+import { createCallbackData } from '../../../../utils/createCallbackData.util';
 
-export class AddFolderEnter extends Command {
+export class AddFolderEnterCommand extends Command {
   constructor(@InjectBot() private readonly bot: Telegraf<Context>) {
     super();
   }
