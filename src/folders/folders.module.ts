@@ -7,6 +7,8 @@ import { AddFolderEnterCommand } from './commands/scenes/addFolder/addFolderEnte
 import { AddFolderScene } from './commands/scenes/addFolder/addFolder.scene';
 import { RemoveFolderEnterCommand } from './commands/scenes/removeFolder/removeFolderEnter.command';
 import { RemoveFolderScene } from './commands/scenes/removeFolder/removeFolder.scene';
+import { RenameFolderScene } from './commands/scenes/renameFolder/renameFolder.scene';
+import { RenameFolderEnterCommand } from './commands/scenes/renameFolder/renameFolderEnter.scene';
 
 @Module({
   providers: [
@@ -16,6 +18,8 @@ import { RemoveFolderScene } from './commands/scenes/removeFolder/removeFolder.s
     AddFolderEnterCommand,
     RemoveFolderScene,
     RemoveFolderEnterCommand,
+    RenameFolderScene,
+    RenameFolderEnterCommand,
   ],
   imports: [SequelizeModule.forFeature([Folder])],
 })

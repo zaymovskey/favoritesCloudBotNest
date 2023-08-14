@@ -20,8 +20,7 @@ export function folderFooterKeyboard(
     [
       Markup.button.callback(
         'Переименовать ✏️',
-        // createFolderCallbackData(EnumFolderActions.REMOVE, folderId),
-        'dump',
+        createFolderCallbackData(EnumFolderActions.RENAME, folderId),
       ),
       Markup.button.callback(
         'Удалить папку ❌',

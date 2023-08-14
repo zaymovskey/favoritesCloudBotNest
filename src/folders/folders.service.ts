@@ -6,6 +6,7 @@ import { createFolderCallbackData } from './utils/createFolderCallbackData';
 import { EnumFolderActions } from './folders.interfaces';
 import { folderFooterKeyboard } from './keyboards/folderFooterKeyboard';
 import { cancelFooterKeyboard } from '../keyboards/cancelFooter.keyboard';
+import { where } from 'sequelize';
 
 export enum EnumFooterTypes {
   FOLDERS_FOOTER = 'folders_footer',
@@ -27,7 +28,20 @@ export class FoldersService {
   readonly foldersKBColumns = 3;
   constructor(@InjectModel(Folder) private folderRepo: typeof Folder) {}
 
-  async removeFolder(folderId: number) {
+  async renameFolder(folderId: number, newName: string) {
+    const renamingFolder = await this.folderRepo.findOne({
+      where: {
+        id: folderId,
+      },
+    });
+
+    renamingFolder!.name = newName;
+    await renamingFolder!.save();
+
+    return renamingFolder!;
+  }
+
+  async removeFolder(folderId: number): Promise<void> {
     await this.folderRepo.destroy({
       where: {
         id: folderId,
@@ -97,8 +111,6 @@ export class FoldersService {
 
       markupButtons.push(markupFolderButtonRows);
     }
-
-    console.log(markupButtons);
 
     if (footerType === EnumFooterTypes.FOLDERS_FOOTER) {
       markupButtons.push(...folderFooterKeyboard(parentId, folderId));
