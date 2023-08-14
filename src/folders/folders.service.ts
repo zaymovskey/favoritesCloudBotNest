@@ -98,8 +98,10 @@ export class FoldersService {
       markupButtons.push(markupFolderButtonRows);
     }
 
+    console.log(markupButtons);
+
     if (footerType === EnumFooterTypes.FOLDERS_FOOTER) {
-      markupButtons.push(folderFooterKeyboard(parentId, folderId));
+      markupButtons.push(...folderFooterKeyboard(parentId, folderId));
     } else if (footerType === EnumFooterTypes.CANCEL_FOOTER) {
       markupButtons.push(cancelFooterKeyboard());
     }
