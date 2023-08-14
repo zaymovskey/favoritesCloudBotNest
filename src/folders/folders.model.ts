@@ -18,7 +18,7 @@ interface IFolderCreationAttrs {
 
 @Table({
   tableName: 'folder',
-  // indexes: [{ fields: ['userId', 'parentId', 'name'], unique: true }],
+  indexes: [{ fields: ['userId', 'parentId', 'name'], unique: true }],
 })
 export class Folder extends Model<Folder, IFolderCreationAttrs> {
   @Column({ type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true })
@@ -40,7 +40,7 @@ export class Folder extends Model<Folder, IFolderCreationAttrs> {
   @ForeignKey(() => Folder)
   parentId: number | null;
 
-  @BelongsTo(() => Folder)
+  @BelongsTo(() => Folder, { onDelete: 'cascade' })
   parent: Folder;
 
   @HasMany(() => Folder)
