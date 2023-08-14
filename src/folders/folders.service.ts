@@ -98,9 +98,9 @@ export class FoldersService {
       markupButtons.push(markupFolderButtonRows);
     }
 
-    if (footerType === 'folders_footer') {
+    if (footerType === EnumFooterTypes.FOLDERS_FOOTER) {
       markupButtons.push(folderFooterKeyboard(parentId, folderId));
-    } else if (footerType === 'cancel_footer') {
+    } else if (footerType === EnumFooterTypes.CANCEL_FOOTER) {
       markupButtons.push(cancelFooterKeyboard());
     }
 
