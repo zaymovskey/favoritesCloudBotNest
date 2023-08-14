@@ -3,7 +3,7 @@ import { SceneContext } from 'telegraf/typings/scenes';
 import { Telegraf } from 'telegraf';
 import { Context } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
-import { FoldersService } from '../../../folders.service';
+import { EnumFooterTypes, FoldersService } from '../../../folders.service';
 import { Update } from 'telegraf/typings/core/types/typegram';
 import {
   EnumFolderActions,
@@ -24,13 +24,12 @@ export class RemoveFolderScene {
   async enter(
     @Ctx() ctx: Context & SceneContext & { update: Update.CallbackQueryUpdate },
   ) {
-    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath(
-      ctx.update.callback_query.from.id,
-      ctx.session.folderId,
-      false,
-      EnumFolderActions.REMOVE,
-      'cancel_footer',
-    );
+    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath({
+      userId: ctx.update.callback_query.from.id,
+      folderId: ctx.session.folderId ?? null,
+      folderAction: EnumFolderActions.REMOVE,
+      footer: { visible: true, footerType: EnumFooterTypes.CANCEL_FOOTER },
+    });
 
     void ctx.reply('Выберите папку, которую хотите удалить', folderKB);
   }
@@ -45,10 +44,10 @@ export class RemoveFolderScene {
     await this.folderService.removeFolder(data.subjectId!);
 
     const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(
-        callbackQueryData!.from.id,
-        ctx.session.folderId,
-      );
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: callbackQueryData!.from.id,
+        folderId: ctx.session.folderId ?? null,
+      });
 
     void ctx.reply(path, folderKB);
 
@@ -61,10 +60,10 @@ export class RemoveFolderScene {
     ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
   ) {
     const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(
-        ctx.update.callback_query.from.id,
-        ctx.session.folderId,
-      );
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: ctx.update.callback_query.from.id,
+        folderId: ctx.session.folderId ?? null,
+      });
 
     await ctx.scene.leave();
 

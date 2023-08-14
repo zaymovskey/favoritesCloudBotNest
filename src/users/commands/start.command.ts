@@ -21,7 +21,10 @@ export class StartCommand extends Command {
     await this.userService.createUser({ userId: ctx.message!.from.id });
 
     const [rootFoldersKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(ctx.message!.from.id);
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: ctx.message!.from.id,
+        folderId: null,
+      });
 
     void ctx.reply(path, rootFoldersKB);
   }

@@ -25,10 +25,10 @@ export class Nav extends Command {
     console.log(data.subjectId);
 
     const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(
-        callbackQueryData!.from.id,
-        data.subjectId,
-      );
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: callbackQueryData!.from.id,
+        folderId: data.subjectId,
+      });
 
     void ctx.reply(path, folderKB);
   }

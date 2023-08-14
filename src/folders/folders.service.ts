@@ -7,6 +7,21 @@ import { EnumFolderActions } from './folders.interfaces';
 import { folderFooterKeyboard } from './keyboards/folderFooterKeyboard';
 import { cancelFooterKeyboard } from '../keyboards/cancelFooter.keyboard';
 
+export enum EnumFooterTypes {
+  FOLDERS_FOOTER = 'folders_footer',
+  CANCEL_FOOTER = 'cancel_footer',
+}
+
+export interface IGetDirectoryFoldersAndPathArgs {
+  userId: number;
+  folderId: number | null;
+  folderAction?: EnumFolderActions;
+  footer?: {
+    visible: boolean;
+    footerType: EnumFooterTypes;
+  };
+}
+
 @Injectable()
 export class FoldersService {
   readonly foldersKBColumns = 3;
@@ -32,13 +47,12 @@ export class FoldersService {
     });
   }
 
-  async getDirectoryFoldersAndPath(
-    userId: number,
-    folderId: number | null = null,
-    footer: boolean = true,
-    folderAction: EnumFolderActions = EnumFolderActions.NAV,
-    footerType: string = 'folders_footer',
-  ) {
+  async getDirectoryFoldersAndPath({
+    userId,
+    folderId = null,
+    folderAction = EnumFolderActions.NAV,
+    footer = { visible: true, footerType: EnumFooterTypes.FOLDERS_FOOTER },
+  }: IGetDirectoryFoldersAndPathArgs) {
     const allUserFolders = await this.folderRepo.findAll({
       where: {
         userId: userId,
@@ -52,9 +66,9 @@ export class FoldersService {
       allUserFolders.filter((folder) => folder.parentId === folderId),
       parentId,
       folderId,
-      footer,
+      footer.visible,
       folderAction,
-      footerType,
+      footer.footerType,
     );
     const path = this.createFolderPath(allUserFolders, folderId, folderId);
 
@@ -72,6 +86,7 @@ export class FoldersService {
     const markupButtons = [];
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
       const markupFolderButtonRows = folders
+        // TODO: Вот это точно надо отрефакторить
         .map((folder) =>
           Markup.button.callback(
             folder.name + ' 📁',

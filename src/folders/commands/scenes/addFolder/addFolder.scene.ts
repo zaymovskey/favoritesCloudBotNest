@@ -37,10 +37,10 @@ export class AddFolderScene {
       folderName,
     );
     const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(
-        userId,
-        newFolder.parentId,
-      );
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: userId,
+        folderId: newFolder.parentId,
+      });
 
     await ctx.scene.leave();
 
@@ -53,10 +53,10 @@ export class AddFolderScene {
     ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
   ) {
     const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath(
-        ctx.update.callback_query.from.id,
-        ctx.session.folderId,
-      );
+      await this.folderService.getDirectoryFoldersAndPath({
+        userId: ctx.update.callback_query.from.id,
+        folderId: ctx.session.folderId ?? null,
+      });
 
     await ctx.scene.leave();
 
