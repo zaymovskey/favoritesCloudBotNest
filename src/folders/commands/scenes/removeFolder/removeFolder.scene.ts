@@ -11,14 +11,16 @@ import {
 } from '../../../folders.interfaces';
 import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
 import { createCallbackData } from '../../../../utils/createCallbackData.util';
+import { MyScene } from '../../../../scene.class';
 
 @Scene('removeFolderScene')
-export class RemoveFolderScene {
+export class RemoveFolderScene extends MyScene {
   constructor(
-    @InjectBot() private readonly bot: Telegraf<Context>,
-    @Inject(FoldersService)
-    private folderService: FoldersService,
-  ) {}
+    @InjectBot() bot: Telegraf<Context>,
+    @Inject(FoldersService) folderService: FoldersService,
+  ) {
+    super(bot, folderService);
+  }
 
   @SceneEnter()
   async enter(
@@ -52,21 +54,5 @@ export class RemoveFolderScene {
     void ctx.reply(path, folderKB);
 
     await ctx.scene.leave();
-  }
-
-  @Action('cancel')
-  async cancel(
-    @Ctx()
-    ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
-  ) {
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: ctx.update.callback_query.from.id,
-        folderId: ctx.session.folderId ?? null,
-      });
-
-    await ctx.scene.leave();
-
-    void ctx.reply(path, folderKB);
   }
 }

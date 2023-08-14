@@ -1,19 +1,20 @@
-import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
 import { Context } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
-import { Update } from 'telegraf/typings/core/types/typegram';
 import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
+import { MyScene } from '../../../../scene.class';
 
 @Scene('addFolderScene')
-export class AddFolderScene {
+export class AddFolderScene extends MyScene {
   constructor(
-    @InjectBot() private readonly bot: Telegraf<Context>,
-    @Inject(FoldersService)
-    private folderService: FoldersService,
-  ) {}
+    @InjectBot() bot: Telegraf<Context>,
+    @Inject(FoldersService) folderService: FoldersService,
+  ) {
+    super(bot, folderService);
+  }
 
   @SceneEnter()
   async enter(@Ctx() ctx: Context) {
@@ -40,22 +41,6 @@ export class AddFolderScene {
       await this.folderService.getDirectoryFoldersAndPath({
         userId: userId,
         folderId: newFolder.parentId,
-      });
-
-    await ctx.scene.leave();
-
-    void ctx.reply(path, folderKB);
-  }
-
-  @Action('cancel')
-  async cancel(
-    @Ctx()
-    ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
-  ) {
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: ctx.update.callback_query.from.id,
-        folderId: ctx.session.folderId ?? null,
       });
 
     await ctx.scene.leave();
