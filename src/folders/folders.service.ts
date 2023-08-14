@@ -107,7 +107,7 @@ export class FoldersService {
             createFolderCallbackData(folderAction, folder.id, folder.parentId),
           ),
         )
-        .slice(i, i + 3);
+        .slice(i, i + this.foldersKBColumns);
 
       markupButtons.push(markupFolderButtonRows);
     }
@@ -118,6 +118,7 @@ export class FoldersService {
       markupButtons.push(cancelFooterKeyboard());
     }
 
+    // TODO: Вот это точно надо отрефакторить
     return Markup.inlineKeyboard(markupButtons);
   }
 
