@@ -6,7 +6,7 @@ import { createFolderCallbackData } from './utils/createFolderCallbackData';
 import { EnumFolderActions } from './folders.interfaces';
 import { folderFooterKeyboard } from './keyboards/folderFooterKeyboard';
 import { cancelFooterKeyboard } from '../keyboards/cancelFooter.keyboard';
-import { where } from 'sequelize';
+import { InlineKeyboardButton } from 'typegram/markup';
 
 export enum EnumFooterTypes {
   FOLDERS_FOOTER = 'folders_footer',
@@ -97,9 +97,9 @@ export class FoldersService {
     folderAction: EnumFolderActions,
     footerType: string,
   ) {
-    const markupButtons = [];
+    const markupButtons: InlineKeyboardButton[][] = [];
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
-      const markupFolderButtonRows = folders
+      const markupFolderButtonRows: InlineKeyboardButton[] = folders
         // TODO: Вот это точно надо отрефакторить
         .map((folder) =>
           Markup.button.callback(
@@ -118,7 +118,6 @@ export class FoldersService {
       markupButtons.push(cancelFooterKeyboard());
     }
 
-    // TODO: Вот это точно надо отрефакторить
     return Markup.inlineKeyboard(markupButtons);
   }
 

@@ -1,11 +1,12 @@
 import { Markup } from 'telegraf';
 import { createFolderCallbackData } from '../utils/createFolderCallbackData';
 import { EnumFolderActions } from '../folders.interfaces';
+import { InlineKeyboardButton } from 'typegram/markup';
 
 export function folderFooterKeyboard(
   parentId: number | null,
   folderId: number | null,
-) {
+): InlineKeyboardButton[][] {
   return [
     [
       Markup.button.callback(
