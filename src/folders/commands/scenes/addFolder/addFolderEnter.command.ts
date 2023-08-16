@@ -5,8 +5,6 @@ import { Context } from '../../../../context.interface';
 import { folderActionRegexps } from '../../../folders.interfaces';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Update } from 'telegraf/typings/core/types/typegram';
-import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
-import { createCallbackData } from '../../../../utils/createCallbackData.util';
 
 export class AddFolderEnterCommand extends Command {
   constructor(@InjectBot() private readonly bot: Telegraf<Context>) {
@@ -17,10 +15,6 @@ export class AddFolderEnterCommand extends Command {
   async handle(
     @Ctx() ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
   ): Promise<void> {
-    const callbackQueryData = getCallbackQueryData(ctx);
-    const data = createCallbackData(callbackQueryData!.data);
-
-    ctx.session.folderId = data.subjectId ?? undefined;
     await ctx.scene.enter('addFolderScene');
   }
 }
