@@ -44,7 +44,7 @@ export class RenameFolderScene extends MyScene {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);
 
-    ctx.session.folderId = data.subjectId!;
+    ctx.session.processedFolderId = data.subjectId;
 
     await ctx.reply(
       'Введите новое имя',
@@ -57,7 +57,7 @@ export class RenameFolderScene extends MyScene {
     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
   ) {
     const newFolderName = ctx.message.text;
-    const folderId = ctx.session.folderId!;
+    const folderId = ctx.session.processedFolderId!;
     const userId = ctx.message.from.id;
 
     const renamedFolder = await this.folderService.renameFolder(
