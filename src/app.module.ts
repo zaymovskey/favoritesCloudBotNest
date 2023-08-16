@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import * as LocalSession from 'telegraf-session-local';
 import { ConfigService } from './config/config.service';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { UsersModule } from './users/users.module';
@@ -8,14 +7,21 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/users.model';
 import { File } from './files/files.model';
 import { Folder } from './folders/folders.model';
+import RedisSession from 'telegraf-session-redis';
 
-const sessions = new LocalSession({ database: 'session_db.json' });
 const configService = new ConfigService();
+
+const session = new RedisSession({
+  store: {
+    host: configService.get('TELEGRAM_SESSION_HOST') || '127.0.0.1',
+    port: configService.get('TELEGRAM_SESSION_PORT') || 6379,
+  },
+});
 
 @Module({
   imports: [
     TelegrafModule.forRoot({
-      middlewares: [sessions.middleware()],
+      middlewares: [session.middleware()],
       token: configService.get('TG_TOKEN'),
     }),
     SequelizeModule.forRoot({
