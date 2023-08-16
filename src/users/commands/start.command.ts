@@ -18,6 +18,8 @@ export class StartCommand extends Command {
 
   @Start()
   async handle(ctx: Context): Promise<void> {
+    ctx.session.folderId = null;
+
     await this.userService.createUser({ userId: ctx.message!.from.id });
 
     const [rootFoldersKB, path] =
