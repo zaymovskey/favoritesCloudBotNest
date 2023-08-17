@@ -29,7 +29,7 @@ export class AddFolderScene extends MyScene {
     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
   ) {
     const folderName = ctx.message.text;
-    const parentId = ctx.session.folderId ?? null;
+    const parentId = ctx.session.folderId;
     const userId = ctx.message.from.id;
 
     const newFolder = await this.folderService.addFolder(

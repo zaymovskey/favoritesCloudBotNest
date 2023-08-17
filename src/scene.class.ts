@@ -20,7 +20,7 @@ export abstract class MyScene {
     const [folderKB, path] =
       await this.folderService.getDirectoryFoldersAndPath({
         userId: ctx.update.callback_query.from.id,
-        folderId: ctx.session.folderId ?? null,
+        folderId: ctx.session.folderId,
       });
 
     await ctx.scene.leave();

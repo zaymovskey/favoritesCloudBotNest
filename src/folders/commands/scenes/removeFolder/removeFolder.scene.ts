@@ -28,7 +28,7 @@ export class RemoveFolderScene extends MyScene {
   ) {
     const [folderKB] = await this.folderService.getDirectoryFoldersAndPath({
       userId: ctx.update.callback_query.from.id,
-      folderId: ctx.session.folderId ?? null,
+      folderId: ctx.session.folderId,
       folderAction: EnumFolderActions.REMOVE,
       footer: { visible: true, footerType: EnumFooterTypes.CANCEL_FOOTER },
     });
@@ -48,7 +48,7 @@ export class RemoveFolderScene extends MyScene {
     const [folderKB, path] =
       await this.folderService.getDirectoryFoldersAndPath({
         userId: callbackQueryData!.from.id,
-        folderId: ctx.session.folderId ?? null,
+        folderId: ctx.session.folderId,
       });
 
     void ctx.reply(path, folderKB);
