@@ -71,6 +71,7 @@ export class FoldersService {
       where: {
         userId: userId,
       },
+      order: ['name'],
     });
 
     const parentId =
@@ -98,16 +99,16 @@ export class FoldersService {
     footerType: string,
   ) {
     const markupButtons: InlineKeyboardButton[][] = [];
+    const markupFolders = folders.map((folder) =>
+      Markup.button.callback(
+        folder.name + ' 📁',
+        createFolderCallbackData(folderAction, folder.id, folder.parentId),
+      ),
+    );
+
     for (let i = 0; i < folders.length; i += this.foldersKBColumns) {
-      const markupFolderButtonRows: InlineKeyboardButton[] = folders
-        // TODO: Вот это точно надо отрефакторить
-        .map((folder) =>
-          Markup.button.callback(
-            folder.name + ' 📁',
-            createFolderCallbackData(folderAction, folder.id, folder.parentId),
-          ),
-        )
-        .slice(i, i + this.foldersKBColumns);
+      const markupFolderButtonRows: InlineKeyboardButton[] =
+        markupFolders.slice(i, i + this.foldersKBColumns);
 
       markupButtons.push(markupFolderButtonRows);
     }
