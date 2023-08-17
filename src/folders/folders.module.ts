@@ -9,6 +9,7 @@ import { RemoveFolderEnterCommand } from './commands/scenes/removeFolder/removeF
 import { RemoveFolderScene } from './commands/scenes/removeFolder/removeFolder.scene';
 import { RenameFolderScene } from './commands/scenes/renameFolder/renameFolder.scene';
 import { RenameFolderEnterCommand } from './commands/scenes/renameFolder/renameFolderEnter.scene';
+import { ChooseRenameFolderScene } from './commands/scenes/renameFolder/chooseRenameFolderScene';
 
 @Module({
   providers: [
@@ -18,6 +19,7 @@ import { RenameFolderEnterCommand } from './commands/scenes/renameFolder/renameF
     AddFolderEnterCommand,
     RemoveFolderScene,
     RemoveFolderEnterCommand,
+    ChooseRenameFolderScene,
     RenameFolderScene,
     RenameFolderEnterCommand,
   ],

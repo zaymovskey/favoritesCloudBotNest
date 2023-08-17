@@ -13,8 +13,8 @@ const configService = new ConfigService();
 
 const session = new RedisSession({
   store: {
-    host: configService.get('TELEGRAM_SESSION_HOST') || '127.0.0.1',
-    port: configService.get('TELEGRAM_SESSION_PORT') || 6379,
+    host: configService.get('REDIS_HOST'),
+    port: configService.get('REDIS_HOST'),
   },
 });
 
