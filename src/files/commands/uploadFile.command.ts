@@ -2,7 +2,7 @@ import { Telegraf } from 'telegraf';
 import { InjectBot, On } from 'nestjs-telegraf';
 import { Command } from '../../command.class';
 import { Inject } from '@nestjs/common';
-import { Context } from '../../context.interface';
+import { Context, PhotoContext } from '../../context.interface';
 import { FilesService } from '../files.service';
 
 export class UploadFileCommand extends Command {
@@ -15,7 +15,9 @@ export class UploadFileCommand extends Command {
   }
 
   @On('photo')
-  async handle(ctx: Context): Promise<void> {
-    console.log('huy');
+  async handle(ctx: PhotoContext): Promise<void> {
+    const photo = ctx.update.message.photo;
+    const bestQualityPhoto = photo[photo.length - 1];
+    console.log(bestQualityPhoto);
   }
 }
