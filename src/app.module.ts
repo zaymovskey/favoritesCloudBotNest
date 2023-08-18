@@ -8,6 +8,7 @@ import { User } from './users/users.model';
 import { File } from './files/files.model';
 import { Folder } from './folders/folders.model';
 import RedisSession from 'telegraf-session-redis';
+import { FilesModule } from './files/files.module';
 
 const configService = new ConfigService();
 
@@ -36,6 +37,7 @@ const session = new RedisSession({
     }),
     UsersModule,
     FoldersModule,
+    FilesModule,
   ],
 })
 export class AppModule {}
