@@ -7,8 +7,9 @@ import { FoldersService } from '../../folders/folders.service';
 import { getCallbackQueryData } from '../../utils/getCallbackQueryData.util';
 import { EnumFilesActions } from '../files.interfaces';
 import { FilesService } from '../files.service';
-import { leaveSceneFooter } from '../../keyboards/leaveSceneFooter';
 import { EnumFileTypes } from '../files.model';
+import { fileActionsKeyboard } from '../keyboards/fileActionsKeyboard';
+import { sendSeparatorMessage } from '../../utils/sendSeparatorMessage';
 
 type availableSendFileMethods =
   | 'sendPhoto'
@@ -40,12 +41,14 @@ export class GetFolderFilesCommand extends Command {
 
     const folderFiles = await this.filesService.getDirectoryFiles(folderId);
 
+    await sendSeparatorMessage(ctx);
+
     await Promise.all(
       folderFiles.map(async (file) => {
         const fileType = file.type;
         await ctx[sendFileMethodNames[fileType]](
           file.fileId,
-          Markup.inlineKeyboard(leaveSceneFooter()),
+          Markup.inlineKeyboard(fileActionsKeyboard()),
         );
       }),
     );
@@ -55,6 +58,8 @@ export class GetFolderFilesCommand extends Command {
         userId: callbackQueryData!.from.id,
         folderId: folderId,
       });
+
+    await sendSeparatorMessage(ctx);
 
     void ctx.reply(path, folderKB);
   }
