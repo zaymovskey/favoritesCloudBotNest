@@ -1,11 +1,12 @@
 import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
-import { Context, PhotoContext } from '../../../../context.interface';
+import { Context, FilesContext } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../../folders/folders.service';
 import { MyScene } from '../../../../scene.class';
 import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
+import { EnumFileTypes } from '../../../files.model';
 
 @Scene('addFilesScene')
 export class UploadFilesScene extends MyScene {
@@ -25,7 +26,9 @@ export class UploadFilesScene extends MyScene {
   }
 
   @On('photo')
-  async onPhoto(ctx: PhotoContext & SceneContext & Context) {
+  async onPhoto(
+    @Ctx() ctx: FilesContext<EnumFileTypes.PHOTO> & SceneContext & Context,
+  ) {
     const photo = ctx.update.message.photo;
     const bestQualityPhoto = photo[photo.length - 1];
     console.log(bestQualityPhoto);
@@ -34,15 +37,15 @@ export class UploadFilesScene extends MyScene {
 
   @On('video')
   async onVideo(
-    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
+    @Ctx() ctx: FilesContext<EnumFileTypes.VIDEO> & SceneContext & Context,
   ) {
-    console.log(ctx);
+    console.log(ctx.update.message);
     await ctx.scene.leave();
   }
 
   @On('audio')
   async onAudio(
-    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
+    @Ctx() ctx: FilesContext<EnumFileTypes.AUDIO> & SceneContext & Context,
   ) {
     console.log(ctx);
     await ctx.scene.leave();
@@ -50,7 +53,7 @@ export class UploadFilesScene extends MyScene {
 
   @On('document')
   async onDocument(
-    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
+    @Ctx() ctx: FilesContext<EnumFileTypes.DOCUMENT> & SceneContext & Context,
   ) {
     console.log(ctx);
     await ctx.scene.leave();

@@ -10,7 +10,7 @@ export class UploadFilesEnterCommand extends Command {
     super();
   }
 
-  @Action('add_files')
+  @Action(EnumFilesActions.ADD)
   async handle(@Ctx() ctx: SceneContext): Promise<void> {
     await ctx.scene.enter('addFilesScene');
   }

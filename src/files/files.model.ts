@@ -9,7 +9,7 @@ import {
 import { User } from '../users/users.model';
 import { Folder } from '../folders/folders.model';
 
-enum EnumFileTypes {
+export enum EnumFileTypes {
   PHOTO = 'photo',
   DOCUMENT = 'document',
   VIDEO = 'video',

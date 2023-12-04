@@ -1,4 +1,5 @@
 import { Context as TelegrafContext } from 'telegraf';
+import { EnumFileTypes } from './files/files.model';
 
 export interface Context extends TelegrafContext {
   session: {
@@ -9,14 +10,13 @@ export interface Context extends TelegrafContext {
 
 type NonEmptyArray<T> = [T, ...T[]];
 
-interface PhotoContextArrayItem {
+interface FilesContextArrayItem {
   file_id: string;
-  file_unique_id: string;
-  file_size: number;
-  width: number;
-  height: number;
 }
 
-export interface PhotoContext extends Omit<TelegrafContext, 'update'> {
-  update: { message: { photo: NonEmptyArray<PhotoContextArrayItem> } };
+export interface FilesContext<QueryKey extends EnumFileTypes>
+  extends Omit<TelegrafContext, 'update'> {
+  update: {
+    message: { [key in QueryKey]: NonEmptyArray<FilesContextArrayItem> };
+  };
 }
