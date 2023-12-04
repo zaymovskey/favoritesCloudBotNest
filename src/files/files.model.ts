@@ -32,7 +32,7 @@ export class File extends Model<File, IFileCreationAttrs> {
   fileId: string;
 
   @Column({ type: DataTypes.ENUM(...Object.values(EnumFileTypes)) })
-  type: string;
+  type: EnumFileTypes;
 
   @ForeignKey(() => User)
   @Column({ type: DataTypes.BIGINT })

@@ -1,13 +1,27 @@
 import { Command } from '../../command.class';
 import { Action, InjectBot } from 'nestjs-telegraf';
-import { Telegraf } from 'telegraf';
+import { Markup, Telegraf } from 'telegraf';
 import { Context } from '../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../folders/folders.service';
 import { getCallbackQueryData } from '../../utils/getCallbackQueryData.util';
-import { createCallbackData } from '../../utils/createCallbackData.util';
 import { EnumFilesActions } from '../files.interfaces';
 import { FilesService } from '../files.service';
+import { leaveSceneFooter } from '../../keyboards/leaveSceneFooter';
+import { EnumFileTypes } from '../files.model';
+
+type availableSendFileMethods =
+  | 'sendPhoto'
+  | 'sendDocument'
+  | 'sendAudio'
+  | 'sendVideo';
+
+const sendFileMethodNames: Record<EnumFileTypes, availableSendFileMethods> = {
+  [EnumFileTypes.PHOTO]: 'sendPhoto',
+  [EnumFileTypes.DOCUMENT]: 'sendDocument',
+  [EnumFileTypes.AUDIO]: 'sendAudio',
+  [EnumFileTypes.VIDEO]: 'sendVideo',
+};
 
 export class GetFolderFilesCommand extends Command {
   constructor(
@@ -28,7 +42,11 @@ export class GetFolderFilesCommand extends Command {
 
     await Promise.all(
       folderFiles.map(async (file) => {
-        await ctx.sendPhoto(file.fileId);
+        const fileType = file.type;
+        await ctx[sendFileMethodNames[fileType]](
+          file.fileId,
+          Markup.inlineKeyboard(leaveSceneFooter()),
+        );
       }),
     );
 
