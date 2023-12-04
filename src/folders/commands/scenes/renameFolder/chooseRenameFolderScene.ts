@@ -37,7 +37,7 @@ export class ChooseRenameFolderScene extends MyScene {
     void ctx.reply('Выберите папку, которую хотите переименовать', folderKB);
   }
 
-  @Action(folderActionRegexps.rename)
+  @Action(folderActionRegexps.rename_folder)
   async onAnswer(
     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
   ) {

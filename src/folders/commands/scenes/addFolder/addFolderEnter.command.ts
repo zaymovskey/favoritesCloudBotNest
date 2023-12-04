@@ -10,7 +10,7 @@ export class AddFolderEnterCommand extends Command {
     super();
   }
 
-  @Action(folderActionRegexps.add)
+  @Action(folderActionRegexps.add_folder)
   async handle(@Ctx() ctx: SceneContext): Promise<void> {
     await ctx.scene.enter('addFolderScene');
   }

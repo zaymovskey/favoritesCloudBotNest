@@ -1,8 +1,8 @@
 export enum EnumFolderActions {
-  NAV = 'nav',
-  ADD = 'add',
-  REMOVE = 'remove',
-  RENAME = 'rename',
+  NAV = 'nav_folder',
+  ADD = 'add_folder',
+  REMOVE = 'remove_folder',
+  RENAME = 'rename_folder',
 }
 
 export const folderActionRegexps: Record<EnumFolderActions, RegExp> = {

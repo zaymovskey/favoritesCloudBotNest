@@ -36,7 +36,7 @@ export class RemoveFolderScene extends MyScene {
     void ctx.reply('Выберите папку, которую хотите удалить', folderKB);
   }
 
-  @Action(folderActionRegexps.remove)
+  @Action(folderActionRegexps.remove_folder)
   async onAnswer(
     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
   ) {

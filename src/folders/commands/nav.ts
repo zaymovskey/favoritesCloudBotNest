@@ -17,7 +17,7 @@ export class Nav extends Command {
     super();
   }
 
-  @Action(folderActionRegexps.nav)
+  @Action(folderActionRegexps.nav_folder)
   async handle(ctx: Context) {
     const callbackQueryData = getCallbackQueryData(ctx);
     const data = createCallbackData(callbackQueryData!.data);

@@ -15,9 +15,14 @@ export class UploadFileCommand extends Command {
   }
 
   @On('photo')
-  async handle(ctx: PhotoContext): Promise<void> {
+  async handle(ctx: PhotoContext & Context): Promise<void> {
     const photo = ctx.update.message.photo;
     const bestQualityPhoto = photo[photo.length - 1];
-    console.log(bestQualityPhoto);
+
+    if (ctx.session.folderId === null) {
+      void ctx.reply('Невозможно загрузить файл в корневой каталог');
+      return;
+    }
+    console.log(ctx.update.message.photo, 'вызвалась');
   }
 }

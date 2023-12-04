@@ -1,7 +1,5 @@
-import { EnumFolderActions } from '../folders.interfaces';
-
 export function createFolderCallbackData(
-  action: EnumFolderActions,
+  action: string,
   folderId: number | null,
   parentId: number | null = null,
 ): string {
