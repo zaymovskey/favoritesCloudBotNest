@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/sequelize';
 export class FilesService {
   constructor(@InjectModel(File) private fileRepo: typeof File) {}
 
-  async addFile(
+  public async addFile(
     userId: number,
     fileId: string,
     folderId: number,
@@ -17,6 +17,14 @@ export class FilesService {
       fileId: fileId,
       folderId: folderId,
       type: type,
+    });
+  }
+
+  public async getDirectoryFiles(folderId: number): Promise<File[]> {
+    return this.fileRepo.findAll({
+      where: {
+        folderId: folderId,
+      },
     });
   }
 }

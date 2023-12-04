@@ -6,6 +6,7 @@ import { UploadFilesScene } from './commands/scenes/uploadFiles/uploadFiles.scen
 import { UploadFilesEnterCommand } from './commands/scenes/uploadFiles/uploadFilesEnter.command';
 import { Folder } from '../folders/folders.model';
 import { FoldersService } from '../folders/folders.service';
+import { GetFolderFilesCommand } from './commands/getFolderFiles.command';
 
 @Module({
   providers: [
@@ -13,6 +14,7 @@ import { FoldersService } from '../folders/folders.service';
     FoldersService,
     UploadFilesScene,
     UploadFilesEnterCommand,
+    GetFolderFilesCommand,
   ],
   imports: [
     SequelizeModule.forFeature([File]),
