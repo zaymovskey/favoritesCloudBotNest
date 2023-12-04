@@ -1,7 +1,7 @@
 import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
-import { Context } from '../../../../context.interface';
+import { Context, PhotoContext } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../../folders/folders.service';
 import { MyScene } from '../../../../scene.class';
@@ -25,10 +25,10 @@ export class UploadFilesScene extends MyScene {
   }
 
   @On('photo')
-  async onPhoto(
-    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
-  ) {
-    console.log(ctx);
+  async onPhoto(ctx: PhotoContext & SceneContext & Context) {
+    const photo = ctx.update.message.photo;
+    const bestQualityPhoto = photo[photo.length - 1];
+    console.log(bestQualityPhoto);
     await ctx.scene.leave();
   }
 

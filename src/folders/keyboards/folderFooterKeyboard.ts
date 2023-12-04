@@ -8,7 +8,7 @@ export function folderFooterKeyboard(
   parentId: number | null,
   folderId: number | null,
 ): InlineKeyboardButton[][] {
-  return [
+  const footerKB = [
     [
       Markup.button.callback(
         'Создать папку ➕',
@@ -29,6 +29,12 @@ export function folderFooterKeyboard(
         createFolderCallbackData(EnumFolderActions.REMOVE, folderId),
       ),
     ],
-    [Markup.button.callback('Добавить файлы 🗎', 'add_files')],
   ];
+  if (folderId !== null) {
+    footerKB.push([
+      Markup.button.callback('Добавить файлы 🗎', EnumFilesActions.ADD),
+    ]);
+  }
+
+  return footerKB;
 }
