@@ -22,7 +22,6 @@ export class GetFolderFilesCommand extends Command {
   @Action(EnumFilesActions.GET)
   async handle(ctx: Context) {
     const callbackQueryData = getCallbackQueryData(ctx);
-    const data = createCallbackData(callbackQueryData!.data);
     const folderId = ctx.session.folderId!;
 
     const folderFiles = await this.filesService.getDirectoryFiles(folderId);
