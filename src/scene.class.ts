@@ -5,12 +5,14 @@ import { Update } from 'telegraf/typings/core/types/typegram';
 import { Telegraf } from 'telegraf';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from './folders/folders.service';
+import { FilesService } from './files/files.service';
 
 export abstract class MyScene {
   protected constructor(
     @InjectBot() protected readonly bot: Telegraf<Context>,
     @Inject(FoldersService)
     protected folderService: FoldersService,
+    protected filesService?: FilesService,
   ) {}
   @Action('cancel')
   async cancel(

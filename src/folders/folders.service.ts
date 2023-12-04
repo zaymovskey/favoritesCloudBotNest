@@ -5,7 +5,7 @@ import { Markup } from 'telegraf';
 import { createFolderCallbackData } from './utils/createFolderCallbackData';
 import { EnumFolderActions } from './folders.interfaces';
 import { folderFooterKeyboard } from './keyboards/folderFooterKeyboard';
-import { cancelFooterKeyboard } from '../keyboards/cancelFooter.keyboard';
+import { leaveSceneFooter } from '../keyboards/leaveSceneFooter';
 import { InlineKeyboardButton } from 'typegram/markup';
 
 export enum EnumFooterTypes {
@@ -116,7 +116,7 @@ export class FoldersService {
     if (footerType === EnumFooterTypes.FOLDERS_FOOTER) {
       markupButtons.push(...folderFooterKeyboard(parentId, folderId));
     } else if (footerType === EnumFooterTypes.CANCEL_FOOTER) {
-      markupButtons.push(cancelFooterKeyboard());
+      markupButtons.push(leaveSceneFooter());
     }
 
     return Markup.inlineKeyboard(markupButtons);

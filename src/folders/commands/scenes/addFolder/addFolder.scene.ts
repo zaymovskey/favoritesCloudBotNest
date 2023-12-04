@@ -4,7 +4,7 @@ import { Markup, Telegraf } from 'telegraf';
 import { Context } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
-import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
+import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 import { MyScene } from '../../../../scene.class';
 
 @Scene('addFolderScene')
@@ -20,7 +20,7 @@ export class AddFolderScene extends MyScene {
   async enter(@Ctx() ctx: Context) {
     await ctx.reply(
       'Введите название папки',
-      Markup.inlineKeyboard(cancelFooterKeyboard()),
+      Markup.inlineKeyboard(leaveSceneFooter()),
     );
   }
 

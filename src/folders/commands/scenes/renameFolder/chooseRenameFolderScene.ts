@@ -12,7 +12,7 @@ import {
 import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
 import { createCallbackData } from '../../../../utils/createCallbackData.util';
 import { MyScene } from '../../../../scene.class';
-import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
+import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 
 @Scene('chooseRenameFolderScene')
 export class ChooseRenameFolderScene extends MyScene {
@@ -48,7 +48,7 @@ export class ChooseRenameFolderScene extends MyScene {
 
     await ctx.reply(
       'Введите новое имя',
-      Markup.inlineKeyboard(cancelFooterKeyboard()),
+      Markup.inlineKeyboard(leaveSceneFooter()),
     );
 
     await ctx.scene.enter('renameFolderScene');

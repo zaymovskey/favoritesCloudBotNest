@@ -18,8 +18,8 @@ export enum EnumFileTypes {
 
 interface IFileCreationAttrs {
   userId: number;
-  fileId: number;
-  fileName: string;
+  fileId: string;
+  folderId: number;
   type: EnumFileTypes;
 }
 
@@ -28,11 +28,8 @@ export class File extends Model<File, IFileCreationAttrs> {
   @Column({ type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column({ type: DataTypes.BIGINT })
-  fileId: number;
-
   @Column({ type: DataTypes.STRING })
-  fileName: string;
+  fileId: string;
 
   @Column({ type: DataTypes.ENUM(...Object.values(EnumFileTypes)) })
   type: string;

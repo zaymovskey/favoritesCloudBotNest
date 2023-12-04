@@ -5,34 +5,50 @@ import { Context, FilesContext } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../../folders/folders.service';
 import { MyScene } from '../../../../scene.class';
-import { cancelFooterKeyboard } from '../../../../keyboards/cancelFooter.keyboard';
+import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 import { EnumFileTypes } from '../../../files.model';
+import { FilesService } from '../../../files.service';
 
 @Scene('addFilesScene')
 export class UploadFilesScene extends MyScene {
   constructor(
     @InjectBot() bot: Telegraf<Context>,
     @Inject(FoldersService) folderService: FoldersService,
+    @Inject(FilesService) filesService: FilesService,
   ) {
-    super(bot, folderService);
+    super(bot, folderService, filesService);
   }
 
   @SceneEnter()
   async enter(@Ctx() ctx: Context) {
     await ctx.reply(
       'Загрузите файлы',
-      Markup.inlineKeyboard(cancelFooterKeyboard()),
+      Markup.inlineKeyboard(leaveSceneFooter()),
     );
   }
 
   @On('photo')
   async onPhoto(
-    @Ctx() ctx: FilesContext<EnumFileTypes.PHOTO> & SceneContext & Context,
+    @Ctx()
+    ctx: FilesContext<EnumFileTypes.PHOTO> &
+      SceneContext &
+      Context & { message: { text: string } },
   ) {
     const photo = ctx.update.message.photo;
-    const bestQualityPhoto = photo[photo.length - 1];
-    console.log(bestQualityPhoto);
-    await ctx.scene.leave();
+    const bestQualityPhotoFileId = photo[photo.length - 1].file_id;
+    const folderId = ctx.session.folderId;
+    const userId = ctx.message.from.id;
+    await this.filesService!.addFile(
+      userId,
+      bestQualityPhotoFileId,
+      folderId!,
+      EnumFileTypes.PHOTO,
+    );
+
+    await ctx.reply(
+      'Файл успешно загружен. Хотите завершить загрузку файлов?',
+      Markup.inlineKeyboard(leaveSceneFooter('Завершить')),
+    );
   }
 
   @On('video')
