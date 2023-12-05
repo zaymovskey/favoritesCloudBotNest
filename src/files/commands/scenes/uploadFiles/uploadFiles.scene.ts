@@ -31,23 +31,17 @@ export class UploadFilesScene extends MyScene {
     ctx.session.messagesToDelete.push({ id: message.message_id });
   }
 
-  @On('photo')
-  async onPhoto(
+  @On([...Object.values(EnumFileTypes)])
+  async onFile(
     @Ctx()
-    ctx: FilesContext<EnumFileTypes.PHOTO> &
-      SceneContext &
-      Context & { message: { text: string } },
+    ctx: FilesContext & SceneContext & Context & { message: { text: string } },
   ) {
-    const photo = ctx.update.message.photo;
-    const bestQualityPhotoFileId = photo[photo.length - 1].file_id;
+    const fileType = this.getFileType(ctx);
+    const fileId = this.getFileId(fileType, ctx);
+
     const folderId = ctx.session.folderId;
     const userId = ctx.message.from.id;
-    await this.filesService!.addFile(
-      userId,
-      bestQualityPhotoFileId,
-      folderId!,
-      EnumFileTypes.PHOTO,
-    );
+    await this.filesService!.addFile(userId, fileId, folderId!, fileType);
 
     const message = await ctx.reply(
       'Файл успешно загружен. Хотите загрузить еще?',
@@ -68,30 +62,6 @@ export class UploadFilesScene extends MyScene {
         duplicateQuestionMessageId,
       );
     }
-  }
-
-  @On('video')
-  async onVideo(
-    @Ctx() ctx: FilesContext<EnumFileTypes.VIDEO> & SceneContext & Context,
-  ) {
-    console.log(ctx.update.message);
-    await ctx.scene.leave();
-  }
-
-  @On('audio')
-  async onAudio(
-    @Ctx() ctx: FilesContext<EnumFileTypes.AUDIO> & SceneContext & Context,
-  ) {
-    console.log(ctx);
-    await ctx.scene.leave();
-  }
-
-  @On('document')
-  async onDocument(
-    @Ctx() ctx: FilesContext<EnumFileTypes.DOCUMENT> & SceneContext & Context,
-  ) {
-    console.log(ctx);
-    await ctx.scene.leave();
   }
 
   @Action(EnumFilesActions.LEAVE_UPLOAD)
@@ -119,5 +89,29 @@ export class UploadFilesScene extends MyScene {
       (message) => message.id !== duplicateQuestionMessageId,
     );
     return duplicateQuestionMessageId;
+  }
+
+  getFileType(ctx: FilesContext): EnumFileTypes {
+    let fileType: EnumFileTypes;
+    if (ctx.update.message.photo) {
+      fileType = EnumFileTypes.PHOTO;
+    } else if (ctx.update.message.video) {
+      fileType = EnumFileTypes.VIDEO;
+    } else if (ctx.update.message.audio) {
+      fileType = EnumFileTypes.AUDIO;
+    } else if (ctx.update.message.document) {
+      fileType = EnumFileTypes.DOCUMENT;
+    }
+    return fileType!;
+  }
+
+  getFileId(fileType: EnumFileTypes, ctx: FilesContext) {
+    switch (fileType) {
+      case EnumFileTypes.PHOTO:
+        const photo = ctx.update.message.photo;
+        return photo[photo.length - 1].file_id;
+      default:
+        return ctx.update.message[fileType].file_id;
+    }
   }
 }

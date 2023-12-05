@@ -1,5 +1,6 @@
 import { Context as TelegrafContext } from 'telegraf';
 import { EnumFileTypes } from './files/files.model';
+import { Audio, Document, Video } from 'typegram';
 
 export interface MessageToDelete {
   id: number;
@@ -21,9 +22,13 @@ interface FilesContextArrayItem {
   file_id: string;
 }
 
-export interface FilesContext<QueryKey extends EnumFileTypes>
-  extends Omit<TelegrafContext, 'update'> {
+export interface FilesContext extends Omit<TelegrafContext, 'update'> {
   update: {
-    message: { [key in QueryKey]: NonEmptyArray<FilesContextArrayItem> };
+    message: {
+      photo: NonEmptyArray<FilesContextArrayItem>;
+      video: Video;
+      audio: Audio;
+      document: Document;
+    };
   };
 }

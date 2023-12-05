@@ -12,6 +12,7 @@ export class RenameFolderEnterCommand extends Command {
 
   @Action(folderActionRegexps.rename_folder)
   async handle(@Ctx() ctx: SceneContext): Promise<void> {
+    await ctx.answerCbQuery();
     await ctx.scene.enter('chooseRenameFolderScene');
   }
 }
