@@ -105,12 +105,15 @@ export class UploadFilesScene extends MyScene {
   async getDuplicateQuestionMessageId(
     ctx: Context,
   ): Promise<number | undefined> {
-    const remainingQuestionMessage = ctx.session.messagesToDelete.find(
+    const duplicatesQuestionMessages = ctx.session.messagesToDelete.filter(
       (message) => message.is_duplicate,
+    );
+    const remainingQuestionMessageId = Math.max(
+      ...duplicatesQuestionMessages.map((message) => message.id),
     );
     const duplicateQuestionMessageId = ctx.session.messagesToDelete.find(
       (message) =>
-        message.id != remainingQuestionMessage?.id && message.is_duplicate,
+        message.id != remainingQuestionMessageId && message.is_duplicate,
     )?.id;
     ctx.session.messagesToDelete = ctx.session.messagesToDelete.filter(
       (message) => message.id !== duplicateQuestionMessageId,
