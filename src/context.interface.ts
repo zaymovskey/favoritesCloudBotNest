@@ -5,6 +5,8 @@ export interface Context extends TelegrafContext {
   session: {
     folderId: number | null;
     processedFolderId?: number | null;
+    messagesIdToDelete: number[];
+    mainMessageId: number;
   };
 }
 

@@ -30,6 +30,17 @@ export class Nav extends Command {
         folderId: data.subjectId,
       });
 
-    void ctx.reply(path, folderKB);
+    await this.bot.telegram.editMessageText(
+      ctx.chat!.id,
+      ctx.session.mainMessageId,
+      undefined,
+      path,
+    );
+    await this.bot.telegram.editMessageReplyMarkup(
+      ctx.chat!.id,
+      ctx.session.mainMessageId,
+      undefined,
+      folderKB.reply_markup,
+    );
   }
 }

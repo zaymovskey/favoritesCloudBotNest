@@ -19,6 +19,7 @@ export class StartCommand extends Command {
   @Start()
   async handle(ctx: Context): Promise<void> {
     ctx.session.folderId = null;
+    ctx.session.messagesIdToDelete = [];
 
     await this.userService.createUser({ userId: ctx.message!.from.id });
 
@@ -28,6 +29,10 @@ export class StartCommand extends Command {
         folderId: null,
       });
 
-    void ctx.reply(path, rootFoldersKB);
+    await ctx.deleteMessage();
+
+    const mainMessage = await ctx.reply(path, rootFoldersKB);
+    console.log(mainMessage);
+    ctx.session.mainMessageId = mainMessage.message_id;
   }
 }

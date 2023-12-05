@@ -6,6 +6,7 @@ import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
 import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 import { MyScene } from '../../../../scene.class';
+import { fileActionsKeyboard } from '../../../../files/keyboards/fileActionsKeyboard';
 
 @Scene('addFolderScene')
 export class AddFolderScene extends MyScene {
@@ -18,10 +19,13 @@ export class AddFolderScene extends MyScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: Context) {
-    await ctx.reply(
+    const message = await ctx.reply(
       'Введите название папки',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
+    const newMessagesIdToDelete = [...ctx.session.messagesIdToDelete];
+    newMessagesIdToDelete.push(message.message_id);
+    ctx.session.messagesIdToDelete = newMessagesIdToDelete;
   }
 
   @On('text')
@@ -37,14 +41,25 @@ export class AddFolderScene extends MyScene {
       parentId,
       folderName,
     );
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: userId,
-        folderId: newFolder.parentId,
-      });
+    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath({
+      userId: userId,
+      folderId: newFolder.parentId,
+    });
+
+    await ctx.deleteMessage();
+    await Promise.all(
+      ctx.session.messagesIdToDelete.map(async (messageId) => {
+        await this.bot.telegram.deleteMessage(ctx.chat!.id, messageId);
+      }),
+    );
+    ctx.session.messagesIdToDelete = [];
+    await this.bot.telegram.editMessageReplyMarkup(
+      ctx.chat!.id,
+      ctx.session.mainMessageId,
+      undefined,
+      folderKB.reply_markup,
+    );
 
     await ctx.scene.leave();
-
-    void ctx.reply(path, folderKB);
   }
 }
