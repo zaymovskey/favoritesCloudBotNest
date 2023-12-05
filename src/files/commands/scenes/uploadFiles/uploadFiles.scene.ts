@@ -44,7 +44,7 @@ export class UploadFilesScene extends MyScene {
     await this.filesService!.addFile(userId, fileId, folderId!, fileType);
 
     const message = await ctx.reply(
-      'Файл успешно загружен. Хотите загрузить еще?',
+      'Файл(ы) успешно загружен(ы). Хотите загрузить еще?',
       Markup.inlineKeyboard(leaveUploadFilesSceneFooter()),
     );
 

@@ -25,6 +25,7 @@ export class FilesService {
       where: {
         folderId: folderId,
       },
+      order: ['createdAt'],
     });
   }
 
