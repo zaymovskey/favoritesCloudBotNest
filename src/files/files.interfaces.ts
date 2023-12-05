@@ -1,4 +1,5 @@
 export enum EnumFilesActions {
-  ADD = 'add_files',
+  UPLOAD = 'upload_files',
+  LEAVE_UPLOAD = 'leave_upload_files',
   GET = 'get_files',
 }

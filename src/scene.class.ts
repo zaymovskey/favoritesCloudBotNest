@@ -25,9 +25,8 @@ export abstract class MyScene {
   }
 
   async pushMessageIdToMessagesToDelete(ctx: Context, message: Message) {
-    const newMessagesIdToDelete = [...ctx.session.messagesIdToDelete];
-    newMessagesIdToDelete.push(message.message_id);
-    ctx.session.messagesIdToDelete = newMessagesIdToDelete;
+    ctx.session.messagesIdToDelete.push(message.message_id);
+    console.log(ctx.session.messagesIdToDelete);
   }
 
   async deleteUselessMessages(ctx: Context) {

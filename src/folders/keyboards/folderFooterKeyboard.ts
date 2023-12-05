@@ -32,7 +32,7 @@ export function folderFooterKeyboard(
   ];
   if (folderId !== null) {
     footerKB.push([
-      Markup.button.callback('Добавить файлы ⤴️📁', EnumFilesActions.ADD),
+      Markup.button.callback('Добавить файлы ⤴️📁', EnumFilesActions.UPLOAD),
     ]);
     footerKB.push([
       Markup.button.callback('Вывести файлы ⤵️📁', EnumFilesActions.GET),

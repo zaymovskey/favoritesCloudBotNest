@@ -1,4 +1,4 @@
-import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
 import { Context, FilesContext } from '../../../../context.interface';
@@ -8,6 +8,8 @@ import { MyScene } from '../../../../scene.class';
 import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 import { EnumFileTypes } from '../../../files.model';
 import { FilesService } from '../../../files.service';
+import { leaveUploadFilesSceneFooter } from '../../../keyboards/leaveUploadFilesSceneFooter';
+import { EnumFilesActions } from '../../../files.interfaces';
 
 @Scene('addFilesScene')
 export class UploadFilesScene extends MyScene {
@@ -21,10 +23,12 @@ export class UploadFilesScene extends MyScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: Context) {
-    await ctx.reply(
+    const message = await ctx.reply(
       'Загрузите файлы',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
+    await ctx.answerCbQuery();
+    await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 
   @On('photo')
@@ -45,9 +49,14 @@ export class UploadFilesScene extends MyScene {
       EnumFileTypes.PHOTO,
     );
 
-    await ctx.reply(
-      'Файл успешно загружен. Хотите завершить загрузку файлов?',
-      Markup.inlineKeyboard(leaveSceneFooter('Завершить')),
+    const message = await ctx.reply(
+      'Файл успешно загружен. Хотите загрузить еще?',
+      Markup.inlineKeyboard(leaveUploadFilesSceneFooter()),
+    );
+
+    ctx.session.messagesIdToDelete.push(
+      message.message_id,
+      ctx.message.message_id,
     );
   }
 
@@ -72,6 +81,14 @@ export class UploadFilesScene extends MyScene {
     @Ctx() ctx: FilesContext<EnumFileTypes.DOCUMENT> & SceneContext & Context,
   ) {
     console.log(ctx);
+    await ctx.scene.leave();
+  }
+
+  @Action(EnumFilesActions.LEAVE_UPLOAD)
+  async handle(
+    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
+  ): Promise<void> {
+    await this.deleteUselessMessages(ctx);
     await ctx.scene.leave();
   }
 }

@@ -32,7 +32,6 @@ export class StartCommand extends Command {
     await ctx.deleteMessage();
 
     const mainMessage = await ctx.reply(path, rootFoldersKB);
-    console.log(mainMessage);
     ctx.session.mainMessageId = mainMessage.message_id;
   }
 }

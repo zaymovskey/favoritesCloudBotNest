@@ -7,23 +7,23 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './users/users.model';
 import { File } from './files/files.model';
 import { Folder } from './folders/folders.model';
-import RedisSession from 'telegraf-session-redis';
 import { FilesModule } from './files/files.module';
-
-const configService = new ConfigService();
-
-const session = new RedisSession({
-  store: {
-    host: configService.get('REDIS_HOST'),
-    port: configService.get('REDIS_HOST'),
-  },
+import { Redis } from '@telegraf/session/redis';
+import { session } from 'telegraf';
+const store = Redis({
+  url: 'redis://127.0.0.1:6379',
 });
 
+const configService = new ConfigService();
 @Module({
   imports: [
-    TelegrafModule.forRoot({
-      middlewares: [session.middleware()],
-      token: configService.get('TG_TOKEN'),
+    TelegrafModule.forRootAsync({
+      useFactory: () => {
+        return {
+          middlewares: [session({ store })],
+          token: configService.get('TG_TOKEN'),
+        };
+      },
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
