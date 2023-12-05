@@ -1,11 +1,16 @@
 import { Context as TelegrafContext } from 'telegraf';
 import { EnumFileTypes } from './files/files.model';
 
+export interface MessageToDelete {
+  id: number;
+  is_duplicate?: boolean;
+}
+
 export interface Context extends TelegrafContext {
   session: {
     folderId: number | null;
     processedFolderId?: number | null;
-    messagesIdToDelete: number[];
+    messagesToDelete: MessageToDelete[];
     mainMessageId: number;
   };
 }

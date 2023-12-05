@@ -38,8 +38,7 @@ export class ChooseRenameFolderScene extends MyScene {
       'Выберите папку, которую хотите переименовать',
       folderKB,
     );
-    await ctx.answerCbQuery();
-    await this.pushMessageIdToMessagesToDelete(ctx, message);
+    ctx.session.messagesToDelete.push({ id: message.message_id });
   }
 
   @Action(folderActionRegexps.rename_folder)
@@ -55,7 +54,7 @@ export class ChooseRenameFolderScene extends MyScene {
       'Введите новое имя',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
-    await this.pushMessageIdToMessagesToDelete(ctx, message);
+    ctx.session.messagesToDelete.push({ id: message.message_id });
 
     await ctx.scene.enter('renameFolderScene');
   }

@@ -23,7 +23,7 @@ export class AddFolderScene extends MyScene {
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
     await ctx.answerCbQuery();
-    await this.pushMessageIdToMessagesToDelete(ctx, message);
+    ctx.session.messagesToDelete.push({ id: message.message_id });
   }
 
   @On('text')

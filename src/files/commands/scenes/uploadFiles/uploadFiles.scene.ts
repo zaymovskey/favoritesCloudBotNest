@@ -1,7 +1,11 @@
 import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
-import { Context, FilesContext } from '../../../../context.interface';
+import {
+  Context,
+  FilesContext,
+  MessageToDelete,
+} from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../../folders/folders.service';
 import { MyScene } from '../../../../scene.class';
@@ -28,7 +32,7 @@ export class UploadFilesScene extends MyScene {
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
     await ctx.answerCbQuery();
-    await this.pushMessageIdToMessagesToDelete(ctx, message);
+    ctx.session.messagesToDelete.push({ id: message.message_id });
   }
 
   @On('photo')
@@ -54,10 +58,20 @@ export class UploadFilesScene extends MyScene {
       Markup.inlineKeyboard(leaveUploadFilesSceneFooter()),
     );
 
-    ctx.session.messagesIdToDelete.push(
-      message.message_id,
-      ctx.message.message_id,
+    ctx.session.messagesToDelete.push(
+      { id: message.message_id, is_duplicate: true },
+      { id: ctx.message.message_id },
     );
+
+    const duplicateQuestionMessageId = await this.getDuplicateQuestionMessageId(
+      ctx,
+    );
+    if (duplicateQuestionMessageId) {
+      await this.bot.telegram.deleteMessage(
+        ctx.chat!.id,
+        duplicateQuestionMessageId,
+      );
+    }
   }
 
   @On('video')
@@ -90,5 +104,21 @@ export class UploadFilesScene extends MyScene {
   ): Promise<void> {
     await this.deleteUselessMessages(ctx);
     await ctx.scene.leave();
+  }
+
+  async getDuplicateQuestionMessageId(
+    ctx: Context,
+  ): Promise<number | undefined> {
+    const remainingQuestionMessage = ctx.session.messagesToDelete.find(
+      (message) => message.is_duplicate,
+    );
+    const duplicateQuestionMessageId = ctx.session.messagesToDelete.find(
+      (message) =>
+        message.id != remainingQuestionMessage?.id && message.is_duplicate,
+    )?.id;
+    ctx.session.messagesToDelete = ctx.session.messagesToDelete.filter(
+      (message) => message.id !== duplicateQuestionMessageId,
+    );
+    return duplicateQuestionMessageId;
   }
 }

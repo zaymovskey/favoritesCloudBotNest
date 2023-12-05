@@ -19,7 +19,7 @@ export class StartCommand extends Command {
   @Start()
   async handle(ctx: Context): Promise<void> {
     ctx.session.folderId = null;
-    ctx.session.messagesIdToDelete = [];
+    ctx.session.messagesToDelete = [];
 
     await this.userService.createUser({ userId: ctx.message!.from.id });
 

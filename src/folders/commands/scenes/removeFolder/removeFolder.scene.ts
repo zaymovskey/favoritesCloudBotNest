@@ -38,7 +38,7 @@ export class RemoveFolderScene extends MyScene {
       folderKB,
     );
     await ctx.answerCbQuery();
-    await this.pushMessageIdToMessagesToDelete(ctx, message);
+    ctx.session.messagesToDelete.push({ id: message.message_id });
   }
 
   @Action(folderActionRegexps.remove_folder)
