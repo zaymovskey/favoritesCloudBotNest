@@ -1,11 +1,7 @@
 import { Action, Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
-import {
-  Context,
-  FilesContext,
-  MessageToDelete,
-} from '../../../../context.interface';
+import { Context, FilesContext } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../../folders/folders.service';
 import { MyScene } from '../../../../scene.class';
