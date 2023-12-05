@@ -1,5 +1,5 @@
 import { Telegraf } from 'telegraf';
-import { InjectBot, Start } from 'nestjs-telegraf';
+import { InjectBot, On, Start } from 'nestjs-telegraf';
 import { Command } from '../../command.class';
 import { UsersService } from '../users.service';
 import { Inject } from '@nestjs/common';
@@ -33,5 +33,10 @@ export class StartCommand extends Command {
 
     const mainMessage = await ctx.reply(path, rootFoldersKB);
     ctx.session.mainMessageId = mainMessage.message_id;
+  }
+
+  @On('message')
+  async allMessage(ctx: Context): Promise<void> {
+    await ctx.deleteMessage();
   }
 }
