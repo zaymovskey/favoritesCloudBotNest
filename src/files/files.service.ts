@@ -27,4 +27,12 @@ export class FilesService {
       },
     });
   }
+
+  public async deleteFile(fileId: number) {
+    await this.fileRepo.destroy({
+      where: {
+        id: fileId,
+      },
+    });
+  }
 }

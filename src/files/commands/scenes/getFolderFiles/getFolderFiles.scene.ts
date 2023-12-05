@@ -8,8 +8,11 @@ import { FilesService } from '../../../files.service';
 import { fileActionsKeyboard } from '../../../keyboards/fileActionsKeyboard';
 import { EnumFileTypes } from '../../../files.model';
 import { leaveGetFolderFilesSceneKeyboard } from '../../../keyboards/leaveGetFolderFilesSceneKeyboard';
-import { EnumFilesActions } from '../../../files.interfaces';
+import { EnumFilesActions, fileActionRegexps } from '../../../files.interfaces';
 import { SceneContext } from 'telegraf/typings/scenes';
+import { folderActionRegexps } from '../../../../folders/folders.interfaces';
+import { getCallbackQueryData } from '../../../../utils/getCallbackQueryData.util';
+import { createCallbackData } from '../../../../utils/createCallbackData.util';
 
 type availableSendFileMethods =
   | 'sendPhoto'
@@ -45,7 +48,7 @@ export class GetFolderFilesScene extends MyScene {
         const fileType = file.type;
         const message = await ctx[sendFileMethodNames[fileType]](
           file.fileId,
-          Markup.inlineKeyboard(fileActionsKeyboard()),
+          Markup.inlineKeyboard(fileActionsKeyboard(file.id)),
         );
         ctx.session.messagesToDelete.push({ id: message.message_id });
       }),
@@ -64,5 +67,21 @@ export class GetFolderFilesScene extends MyScene {
   ): Promise<void> {
     await this.deleteUselessMessages(ctx);
     await ctx.scene.leave();
+  }
+
+  @Action(fileActionRegexps.remove_files!)
+  async removeFile(ctx: Context) {
+    const callbackQueryData = getCallbackQueryData(ctx);
+    const data = createCallbackData(callbackQueryData!.data);
+
+    const fileIdDB = data.subjectId!;
+    const fileMessageToDeleteId = callbackQueryData!.message!.message_id;
+
+    ctx.session.messagesToDelete = ctx.session.messagesToDelete.filter(
+      (message) => message.id !== fileMessageToDeleteId,
+    );
+
+    await this.filesService!.deleteFile(fileIdDB);
+    await this.bot.telegram.deleteMessage(ctx.chat!.id, fileMessageToDeleteId);
   }
 }
