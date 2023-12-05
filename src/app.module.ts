@@ -10,11 +10,15 @@ import { Folder } from './folders/folders.model';
 import { FilesModule } from './files/files.module';
 import { Redis } from '@telegraf/session/redis';
 import { session } from 'telegraf';
-const store = Redis({
-  url: 'redis://127.0.0.1:6379',
-});
 
 const configService = new ConfigService();
+
+const store = Redis({
+  url: `redis://${configService.get('REDIS_HOST')}:${configService.get(
+    'REDIS_PORT',
+  )}`,
+});
+
 @Module({
   imports: [
     TelegrafModule.forRootAsync({
