@@ -6,7 +6,6 @@ import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
 import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
 import { MyScene } from '../../../../scene.class';
-import { fileActionsKeyboard } from '../../../../files/keyboards/fileActionsKeyboard';
 
 @Scene('addFolderScene')
 export class AddFolderScene extends MyScene {
@@ -23,9 +22,7 @@ export class AddFolderScene extends MyScene {
       'Введите название папки',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
-    const newMessagesIdToDelete = [...ctx.session.messagesIdToDelete];
-    newMessagesIdToDelete.push(message.message_id);
-    ctx.session.messagesIdToDelete = newMessagesIdToDelete;
+    await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 
   @On('text')
@@ -46,13 +43,8 @@ export class AddFolderScene extends MyScene {
       folderId: newFolder.parentId,
     });
 
-    await ctx.deleteMessage();
-    await Promise.all(
-      ctx.session.messagesIdToDelete.map(async (messageId) => {
-        await this.bot.telegram.deleteMessage(ctx.chat!.id, messageId);
-      }),
-    );
-    ctx.session.messagesIdToDelete = [];
+    await this.deleteUselessMessages(ctx);
+
     await this.bot.telegram.editMessageReplyMarkup(
       ctx.chat!.id,
       ctx.session.mainMessageId,

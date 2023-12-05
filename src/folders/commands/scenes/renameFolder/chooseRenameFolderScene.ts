@@ -34,7 +34,11 @@ export class ChooseRenameFolderScene extends MyScene {
       footer: { visible: true, footerType: EnumFooterTypes.CANCEL_FOOTER },
     });
 
-    void ctx.reply('Выберите папку, которую хотите переименовать', folderKB);
+    const message = await ctx.reply(
+      'Выберите папку, которую хотите переименовать',
+      folderKB,
+    );
+    await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 
   @Action(folderActionRegexps.rename_folder)
@@ -46,10 +50,11 @@ export class ChooseRenameFolderScene extends MyScene {
 
     ctx.session.processedFolderId = data.subjectId;
 
-    await ctx.reply(
+    const message = await ctx.reply(
       'Введите новое имя',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
+    await this.pushMessageIdToMessagesToDelete(ctx, message);
 
     await ctx.scene.enter('renameFolderScene');
   }

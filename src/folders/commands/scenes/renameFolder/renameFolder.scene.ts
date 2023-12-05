@@ -16,7 +16,7 @@ export class RenameFolderScene extends MyScene {
   }
 
   @On('text')
-  async onAnswer2(
+  async onAnswer(
     @Ctx() ctx: SceneContext & Context & { message: { text: string } },
   ) {
     const newFolderName = ctx.message.text;
@@ -28,14 +28,21 @@ export class RenameFolderScene extends MyScene {
       newFolderName,
     );
 
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: userId,
-        folderId: renamedFolder.parentId,
-      });
+    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath({
+      userId: userId,
+      folderId: renamedFolder.parentId,
+    });
 
+    await this.deleteUselessMessages(ctx);
+
+    await this.bot.telegram.editMessageReplyMarkup(
+      ctx.chat!.id,
+      ctx.session.mainMessageId,
+      undefined,
+      folderKB.reply_markup,
+    );
+
+    ctx.session.processedFolderId = null;
     await ctx.scene.leave();
-
-    void ctx.reply(path, folderKB);
   }
 }

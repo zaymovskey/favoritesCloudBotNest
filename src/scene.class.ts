@@ -6,6 +6,7 @@ import { Telegraf } from 'telegraf';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from './folders/folders.service';
 import { FilesService } from './files/files.service';
+import { Message } from 'typegram';
 
 export abstract class MyScene {
   protected constructor(
@@ -28,5 +29,21 @@ export abstract class MyScene {
     await ctx.scene.leave();
 
     void ctx.reply(path, folderKB);
+  }
+
+  async pushMessageIdToMessagesToDelete(ctx: Context, message: Message) {
+    const newMessagesIdToDelete = [...ctx.session.messagesIdToDelete];
+    newMessagesIdToDelete.push(message.message_id);
+    ctx.session.messagesIdToDelete = newMessagesIdToDelete;
+  }
+
+  async deleteUselessMessages(ctx: Context) {
+    await ctx.deleteMessage();
+    await Promise.all(
+      ctx.session.messagesIdToDelete.map(async (messageId) => {
+        await this.bot.telegram.deleteMessage(ctx.chat!.id, messageId);
+      }),
+    );
+    ctx.session.messagesIdToDelete = [];
   }
 }
