@@ -38,7 +38,6 @@ export abstract class MyScene {
   }
 
   async deleteUselessMessages(ctx: Context) {
-    await ctx.deleteMessage();
     await Promise.all(
       ctx.session.messagesIdToDelete.map(async (messageId) => {
         await this.bot.telegram.deleteMessage(ctx.chat!.id, messageId);

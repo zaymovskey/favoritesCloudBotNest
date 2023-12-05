@@ -33,6 +33,7 @@ export class RenameFolderScene extends MyScene {
       folderId: renamedFolder.parentId,
     });
 
+    await ctx.deleteMessage();
     await this.deleteUselessMessages(ctx);
 
     await this.bot.telegram.editMessageReplyMarkup(

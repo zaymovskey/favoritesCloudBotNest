@@ -43,6 +43,7 @@ export class AddFolderScene extends MyScene {
       folderId: newFolder.parentId,
     });
 
+    await ctx.deleteMessage();
     await this.deleteUselessMessages(ctx);
 
     await this.bot.telegram.editMessageReplyMarkup(

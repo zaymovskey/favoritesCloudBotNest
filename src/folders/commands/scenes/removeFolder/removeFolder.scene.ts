@@ -33,7 +33,11 @@ export class RemoveFolderScene extends MyScene {
       footer: { visible: true, footerType: EnumFooterTypes.CANCEL_FOOTER },
     });
 
-    void ctx.reply('Выберите папку, которую хотите удалить', folderKB);
+    const message = await ctx.reply(
+      'Выберите папку, которую хотите удалить',
+      folderKB,
+    );
+    await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 
   @Action(folderActionRegexps.remove_folder)
@@ -45,13 +49,19 @@ export class RemoveFolderScene extends MyScene {
 
     await this.folderService.removeFolder(data.subjectId!);
 
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: callbackQueryData!.from.id,
-        folderId: ctx.session.folderId,
-      });
+    const [folderKB] = await this.folderService.getDirectoryFoldersAndPath({
+      userId: callbackQueryData!.from.id,
+      folderId: ctx.session.folderId,
+    });
 
-    void ctx.reply(path, folderKB);
+    await this.deleteUselessMessages(ctx);
+
+    await this.bot.telegram.editMessageReplyMarkup(
+      ctx.chat!.id,
+      ctx.session.mainMessageId,
+      undefined,
+      folderKB.reply_markup,
+    );
 
     await ctx.scene.leave();
   }
