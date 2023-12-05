@@ -38,6 +38,7 @@ export class ChooseRenameFolderScene extends MyScene {
       'Выберите папку, которую хотите переименовать',
       folderKB,
     );
+    await ctx.answerCbQuery();
     await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 

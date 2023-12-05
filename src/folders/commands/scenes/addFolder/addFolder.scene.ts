@@ -22,6 +22,7 @@ export class AddFolderScene extends MyScene {
       'Введите название папки',
       Markup.inlineKeyboard(leaveSceneFooter()),
     );
+    await ctx.answerCbQuery();
     await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 

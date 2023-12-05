@@ -20,15 +20,8 @@ export abstract class MyScene {
     @Ctx()
     ctx: SceneContext & Context & { update: Update.CallbackQueryUpdate },
   ) {
-    const [folderKB, path] =
-      await this.folderService.getDirectoryFoldersAndPath({
-        userId: ctx.update.callback_query.from.id,
-        folderId: ctx.session.folderId,
-      });
-
+    await this.deleteUselessMessages(ctx);
     await ctx.scene.leave();
-
-    void ctx.reply(path, folderKB);
   }
 
   async pushMessageIdToMessagesToDelete(ctx: Context, message: Message) {

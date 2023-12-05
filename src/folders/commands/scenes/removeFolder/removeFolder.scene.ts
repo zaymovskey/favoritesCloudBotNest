@@ -37,6 +37,7 @@ export class RemoveFolderScene extends MyScene {
       'Выберите папку, которую хотите удалить',
       folderKB,
     );
+    await ctx.answerCbQuery();
     await this.pushMessageIdToMessagesToDelete(ctx, message);
   }
 
