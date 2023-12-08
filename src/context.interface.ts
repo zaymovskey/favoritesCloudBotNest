@@ -1,5 +1,4 @@
 import { Context as TelegrafContext } from 'telegraf';
-import { EnumFileTypes } from './files/files.model';
 import { Audio, Document, Video } from 'typegram';
 
 export interface MessageToDelete {
@@ -14,6 +13,10 @@ export interface Context extends TelegrafContext {
     messagesToDelete: MessageToDelete[];
     mainMessageId: number;
   };
+}
+
+export interface MessageContext extends Omit<Context, 'message'> {
+  message: { text: string };
 }
 
 type NonEmptyArray<T> = [T, ...T[]];

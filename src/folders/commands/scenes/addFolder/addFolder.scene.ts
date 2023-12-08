@@ -1,7 +1,7 @@
 import { Ctx, InjectBot, On, Scene, SceneEnter } from 'nestjs-telegraf';
 import { SceneContext } from 'telegraf/typings/scenes';
 import { Markup, Telegraf } from 'telegraf';
-import { Context } from '../../../../context.interface';
+import { Context, MessageContext } from '../../../../context.interface';
 import { Inject } from '@nestjs/common';
 import { FoldersService } from '../../../folders.service';
 import { leaveSceneFooter } from '../../../../keyboards/leaveSceneFooter';
@@ -27,9 +27,7 @@ export class AddFolderScene extends MyScene {
   }
 
   @On('text')
-  async onAnswer(
-    @Ctx() ctx: SceneContext & Context & { message: { text: string } },
-  ) {
+  async onAnswer(@Ctx() ctx: SceneContext & MessageContext) {
     const folderName = ctx.message.text;
     const parentId = ctx.session.folderId;
     const userId = ctx.message.from.id;
