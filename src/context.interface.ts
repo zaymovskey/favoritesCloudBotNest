@@ -15,10 +15,6 @@ export interface Context extends TelegrafContext {
   };
 }
 
-export interface MessageContext extends Omit<Context, 'message'> {
-  message: { text: string };
-}
-
 type NonEmptyArray<T> = [T, ...T[]];
 
 interface FilesContextArrayItem {
